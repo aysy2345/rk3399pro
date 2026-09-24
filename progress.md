@@ -88,6 +88,20 @@
 
 ## Test Results
 
+### Phase 5 设计确认
+
+- **Status:** complete
+- Actions taken:
+  - 通过视觉原型确认上下分区主界面、三步登记向导和表格式成员管理。
+  - 确认默认最大化窗口、手动开始识别、登记独占摄像头和自动采集 15 个样本。
+  - 确认 Fake/ONNX 双后端、分层单工作线程、错误处理和验收边界。
+  - 编写 Phase 5 摄像头、工作线程与桌面界面设计文档。
+- Files created/modified:
+  - `docs/superpowers/specs/2026-09-24-phase5-camera-ui-design.md`
+  - `findings.md`
+  - `task_plan.md`
+  - `progress.md`
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -107,6 +121,8 @@
 | Phase 4 CodeGraph 同步 | 新增推理与导出源码 | 索引无待处理变化 | 25 个文件、254 个节点，索引最新 | 通过 |
 | README 相对链接 | 根 README | 所有本地链接目标存在 | 全部存在 | 通过 |
 | README 更新后单元测试 | 28 项 | 全部通过 | 28 项通过，耗时 0.75 秒 | 通过 |
+| Phase 5 设计一致性自审 | 用户确认的架构、界面、登记、配置与异常决策 | 正式文档全部覆盖 | 关键决策全部可定位 | 通过 |
+| Phase 5 文档差异检查 | 当前待提交改动 | `git diff --check` 无错误 | 退出码 0，仅有 Windows 换行提示 | 通过 |
 
 ## Error Log
 
@@ -126,6 +142,7 @@
 | 2026-09-24 | GitHub Contents API 查询固定权重时连接超时 | 1 | 改用固定 commit 的 raw 地址下载并本地计算 SHA-256 |
 | 2026-09-24 | README 刷新时自动审批额度耗尽且沙箱初始化失败 | 2 | 未绕过审批；等待额度恢复后继续使用 apply_patch |
 | 2026-09-24 | README 进度补丁包含多余空 hunk | 1 | 删除空 hunk 后重新应用补丁 |
+| 2026-09-24 | Phase 5 设计补丁中的 Markdown 围栏与 JavaScript 模板字符串冲突 | 1 | 改用缩进代码块后重新应用补丁 |
 
 ## 5-Question Reboot Check
 

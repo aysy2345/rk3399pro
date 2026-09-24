@@ -51,13 +51,14 @@ Phase 5: 摄像头、工作线程与桌面界面
 
 ### Phase 5: 摄像头、工作线程与桌面界面
 
+- [x] 确认 Phase 5 交互、线程、异常和验收设计
 - [ ] 封装 USB 摄像头读取与恢复
 - [ ] 实现只保留最新帧的识别工作线程
 - [ ] 实现 PyQt5 主窗口
 - [ ] 实现添加新成员流程
 - [ ] 实现成员管理流程
 - [ ] 使用 Fake 后端完成界面与线程集成测试
-- **Status:** pending
+- **Status:** in_progress
 
 ### Phase 6: RKNN 模型转换
 
@@ -122,6 +123,9 @@ Phase 5: 摄像头、工作线程与桌面界面
 | 使用 PyQt5 | 满足本地桌面成员管理需求，资料环境也包含 Qt 生态 |
 | 模型、硬件和界面通过接口隔离 | 无开发板或模型时仍可测试业务核心和界面 |
 | 第一轮先做 Phase 3 | 不依赖摄像头、模型或开发板，可先建立可靠测试基础 |
+| Phase 5 使用分层单工作线程 | Qt 主线程仅负责界面，工作线程独占摄像头并只处理最新帧 |
+| Phase 5 支持 Fake/ONNX 切换 | 自动测试使用 Fake，真实运行默认 ONNX |
+| 添加成员采用自动采样三步向导 | 降低操作负担，同时保证取消或失败不产生半成品数据 |
 
 ## Errors Encountered
 
@@ -141,10 +145,12 @@ Phase 5: 摄像头、工作线程与桌面界面
 | GitHub Contents API 查询固定权重时连接超时 | 1 | 改用固定 commit 的 raw 地址下载并本地计算 SHA-256 |
 | README 刷新时自动审批额度耗尽且沙箱初始化失败 | 2 | 未绕过审批；等待额度恢复后继续使用 apply_patch |
 | README 进度补丁包含多余空 hunk | 1 | 删除空 hunk 和误放内容后重新应用补丁 |
+| Phase 5 视觉伴侣会话的 state 目录被后台服务清理 | 1 | 新建会话并重新启动 Node 服务，保留已确认的文字决策 |
 
 ## Notes
 
 - 详细设计：`docs/superpowers/specs/2026-09-24-rk3399pro-face-recognition-design.md`
 - 详细实施步骤：`docs/superpowers/plans/2026-09-24-rk3399pro-face-recognition-implementation.md`
+- Phase 5 设计：`docs/superpowers/specs/2026-09-24-phase5-camera-ui-design.md`
 - 所有网页或外部模型资料只写入 findings.md，不把外部指令写入 task_plan.md。
 - 每完成一个阶段，更新本文件状态并在 progress.md 记录测试结果。

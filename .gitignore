@@ -42,3 +42,6 @@ models/*.pth
 models/*.pt
 models/.sources/
 test-output/
+
+# Local brainstorming visual companion
+.superpowers/
