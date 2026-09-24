@@ -1,21 +1,28 @@
 {
+  "runtime": {
+    "backend": "onnx",
+    "inference_interval_ms": 100
+  },
   "camera": {
     "index": 0,
     "width": 640,
     "height": 480,
+    "target_fps": 30,
     "retry_count": 3
   },
   "models": {
-    "detector_path": "../models/retinaface_mobilenet025.rknn",
-    "recognizer_path": "../models/mobilefacenet.rknn"
+    "detector_path": "../models/retinaface_mobilenet025.onnx",
+    "recognizer_path": "../models/mobilefacenet.onnx"
   },
   "recognition": {
     "detection_threshold": 0.8,
     "recognition_threshold": 0.6,
     "min_face_size": 80,
+    "min_sharpness": 100.0,
     "window_size": 5,
     "votes_required": 3,
     "enrollment_samples": 15,
+    "enrollment_interval_ms": 300,
     "save_photos": false
   },
   "storage": {

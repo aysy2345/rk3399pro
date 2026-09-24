@@ -49,6 +49,7 @@
 - 当前质量检查只覆盖单人、人脸尺寸和清晰度，尚未根据五点关键点判断正视、左转和右转；自动采样前需要补充姿态估计与姿态配额。
 - `IdentityStabilizer` 需要 track_id，但当前没有跟踪器；Phase 5 可使用基于检测框 IoU 的轻量关联生成短时轨迹编号，不引入重型跟踪依赖。
 - 当前测试依赖没有 PyQt5 或 pytest-qt；Phase 5 的离屏 Qt 测试需要补充主机测试依赖，同时继续通过 Fake Camera 和 Fake 推理隔离真实硬件。
+- Windows Python 3.11 测试虚拟环境已成功安装 PyQt5 5.15.7 与 pytest-qt 4.4.0，`pip check` 无冲突；加入新配置测试后完整测试为 37 项。
 
 ## Technical Decisions
 

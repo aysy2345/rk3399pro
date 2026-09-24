@@ -1,4 +1,4 @@
-# Install PyQt5 from the Ubuntu package repository on ARM64.
+# Install PyQt5 from the Ubuntu package repository on ARM64; do not use pip.
 numpy==1.16.3
 opencv-python==4.5.4.60
 Pillow==9.2.0

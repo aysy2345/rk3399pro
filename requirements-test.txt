@@ -1,4 +1,6 @@
 # Host-side verification environment for the current Python 3.11 workstation.
 numpy==1.26.4
 opencv-python-headless==4.10.0.84
+PyQt5==5.15.7
 pytest==8.3.5
+pytest-qt==4.4.0

@@ -13,10 +13,17 @@ class ConfigError(ValueError):
 
 
 @dataclass(frozen=True)
+class RuntimeConfig:
+    backend: str
+    inference_interval_ms: int
+
+
+@dataclass(frozen=True)
 class CameraConfig:
     index: int
     width: int
     height: int
+    target_fps: int
     retry_count: int
 
 
@@ -31,9 +38,11 @@ class RecognitionConfig:
     detection_threshold: float
     recognition_threshold: float
     min_face_size: int
+    min_sharpness: float
     window_size: int
     votes_required: int
     enrollment_samples: int
+    enrollment_interval_ms: int
     save_photos: bool
 
 
@@ -44,6 +53,7 @@ class StorageConfig:
 
 @dataclass(frozen=True)
 class AppConfig:
+    runtime: RuntimeConfig
     camera: CameraConfig
     models: ModelConfig
     recognition: RecognitionConfig
@@ -86,6 +96,27 @@ def _boolean(data: Mapping[str, Any], field: str) -> bool:
     return value
 
 
+def _choice(
+    data: Mapping[str, Any], field: str, choices: tuple
+) -> str:
+    value = data.get(field)
+    if not isinstance(value, str) or value not in choices:
+        raise ConfigError(
+            "{} must be one of {}".format(field, ", ".join(choices))
+        )
+    return value
+
+
+def _non_negative_number(data: Mapping[str, Any], field: str) -> float:
+    value = data.get(field)
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ConfigError("{} must be a number".format(field))
+    result = float(value)
+    if result < 0.0:
+        raise ConfigError("{} must be at least 0".format(field))
+    return result
+
+
 def _path(data: Mapping[str, Any], field: str, base_dir: Path) -> Path:
     value = data.get(field)
     if not isinstance(value, str) or not value.strip():
@@ -97,15 +128,25 @@ def _path(data: Mapping[str, Any], field: str, base_dir: Path) -> Path:
 
 
 def parse_config(data: Mapping[str, Any], base_dir: Path) -> AppConfig:
+    runtime_data = _mapping(data.get("runtime"), "runtime")
     camera_data = _mapping(data.get("camera"), "camera")
     model_data = _mapping(data.get("models"), "models")
     recognition_data = _mapping(data.get("recognition"), "recognition")
     storage_data = _mapping(data.get("storage"), "storage")
 
+    runtime = RuntimeConfig(
+        backend=_choice(
+            runtime_data, "backend", ("fake", "onnx", "rknn")
+        ),
+        inference_interval_ms=_integer(
+            runtime_data, "inference_interval_ms", 0
+        ),
+    )
     camera = CameraConfig(
         index=_integer(camera_data, "index", 0),
         width=_integer(camera_data, "width", 1),
         height=_integer(camera_data, "height", 1),
+        target_fps=_integer(camera_data, "target_fps", 1),
         retry_count=_integer(camera_data, "retry_count", 0),
     )
     models = ModelConfig(
@@ -120,9 +161,15 @@ def parse_config(data: Mapping[str, Any], base_dir: Path) -> AppConfig:
             recognition_data, "recognition_threshold", -1.0, 1.0
         ),
         min_face_size=_integer(recognition_data, "min_face_size", 1),
+        min_sharpness=_non_negative_number(
+            recognition_data, "min_sharpness"
+        ),
         window_size=_integer(recognition_data, "window_size", 1),
         votes_required=_integer(recognition_data, "votes_required", 1),
         enrollment_samples=_integer(recognition_data, "enrollment_samples", 1),
+        enrollment_interval_ms=_integer(
+            recognition_data, "enrollment_interval_ms", 0
+        ),
         save_photos=_boolean(recognition_data, "save_photos"),
     )
     if recognition.votes_required > recognition.window_size:
@@ -134,6 +181,7 @@ def parse_config(data: Mapping[str, Any], base_dir: Path) -> AppConfig:
         data_dir=_path(storage_data, "data_dir", base_dir),
     )
     return AppConfig(
+        runtime=runtime,
         camera=camera,
         models=models,
         recognition=recognition,
@@ -156,6 +204,8 @@ def load_config(path: Path) -> AppConfig:
 
 
 def validate_runtime_paths(config: AppConfig) -> None:
+    if config.runtime.backend == "fake":
+        return
     missing = [
         path
         for path in (

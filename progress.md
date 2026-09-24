@@ -115,6 +115,21 @@
   - `task_plan.md`
   - `progress.md`
 
+### Phase 5 Task 1：运行配置与测试依赖
+
+- **Status:** complete
+- Actions taken:
+  - 先新增 backend、推理间隔、目标帧率、清晰度和登记采样间隔的失败测试。
+  - 扩展不可变 AppConfig 数据类和字段校验；Fake 后端不再要求本地模型文件存在。
+  - 将示例运行后端和模型路径切换为 ONNX。
+  - 在测试虚拟环境安装锁定版本的 PyQt5 与 pytest-qt。
+- Files created/modified:
+  - `face_recognition_app/app/config.py`
+  - `configs/app.example.json`
+  - `requirements-test.txt`
+  - `requirements-rk3399pro.txt`
+  - `tests/unit/test_config.py`
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -136,6 +151,10 @@
 | README 更新后单元测试 | 28 项 | 全部通过 | 28 项通过，耗时 0.75 秒 | 通过 |
 | Phase 5 设计一致性自审 | 用户确认的架构、界面、登记、配置与异常决策 | 正式文档全部覆盖 | 关键决策全部可定位 | 通过 |
 | Phase 5 文档差异检查 | 当前待提交改动 | `git diff --check` 无错误 | 退出码 0，仅有 Windows 换行提示 | 通过 |
+| Phase 5 Task 1 TDD 红灯 | 新增配置测试 | 新字段实现前测试失败 | 10 失败、4 通过，原因均为待实现字段 | 通过 |
+| Phase 5 配置测试 | `tests/unit/test_config.py` | 全部通过 | 14 项通过，耗时 0.14 秒 | 通过 |
+| Phase 5 Task 1 完整回归 | 全部测试 | 全部通过 | 37 项通过，耗时 0.84 秒 | 通过 |
+| Phase 5 Qt 测试依赖 | 测试虚拟环境 | 无依赖冲突 | PyQt5/pytest-qt 可导入，pip check 无错误 | 通过 |
 
 ## Error Log
 
@@ -156,6 +175,7 @@
 | 2026-09-24 | README 刷新时自动审批额度耗尽且沙箱初始化失败 | 2 | 未绕过审批；等待额度恢复后继续使用 apply_patch |
 | 2026-09-24 | README 进度补丁包含多余空 hunk | 1 | 删除空 hunk 后重新应用补丁 |
 | 2026-09-24 | Phase 5 设计补丁中的 Markdown 围栏与 JavaScript 模板字符串冲突 | 1 | 改用缩进代码块后重新应用补丁 |
+| 2026-09-24 | Phase 5 测试环境缺少 PyQt5 | 1 | 按 requirements-test.txt 锁定版本安装 PyQt5 5.15.7 与 pytest-qt 4.4.0 |
 
 ## 5-Question Reboot Check
 

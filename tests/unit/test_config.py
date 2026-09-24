@@ -12,7 +12,14 @@ from face_recognition_app.app.config import (
 
 def valid_config():
     return {
-        "camera": {"index": 0, "width": 640, "height": 480, "retry_count": 3},
+        "runtime": {"backend": "onnx", "inference_interval_ms": 100},
+        "camera": {
+            "index": 0,
+            "width": 640,
+            "height": 480,
+            "target_fps": 30,
+            "retry_count": 3,
+        },
         "models": {
             "detector_path": "models/detector.rknn",
             "recognizer_path": "models/recognizer.rknn",
@@ -21,9 +28,11 @@ def valid_config():
             "detection_threshold": 0.8,
             "recognition_threshold": 0.6,
             "min_face_size": 80,
+            "min_sharpness": 100.0,
             "window_size": 5,
             "votes_required": 3,
             "enrollment_samples": 15,
+            "enrollment_interval_ms": 300,
             "save_photos": False,
         },
         "storage": {"data_dir": "face_data"},
@@ -33,9 +42,49 @@ def valid_config():
 def test_parse_config_resolves_relative_paths(tmp_path):
     config = parse_config(valid_config(), tmp_path)
 
+    assert config.runtime.backend == "onnx"
+    assert config.runtime.inference_interval_ms == 100
     assert config.camera.width == 640
+    assert config.camera.target_fps == 30
+    assert config.recognition.min_sharpness == pytest.approx(100.0)
+    assert config.recognition.enrollment_interval_ms == 300
     assert config.models.detector_path == (tmp_path / "models/detector.rknn").resolve()
     assert config.storage.data_dir == (tmp_path / "face_data").resolve()
+
+
+@pytest.mark.parametrize("backend", ["fake", "onnx", "rknn"])
+def test_parse_config_accepts_supported_backends(tmp_path, backend):
+    data = valid_config()
+    data["runtime"]["backend"] = backend
+
+    assert parse_config(data, tmp_path).runtime.backend == backend
+
+
+def test_parse_config_rejects_unknown_backend(tmp_path):
+    data = valid_config()
+    data["runtime"]["backend"] = "cuda"
+
+    with pytest.raises(ConfigError, match="backend"):
+        parse_config(data, tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    [
+        ("runtime", "inference_interval_ms", -1),
+        ("camera", "target_fps", 0),
+        ("recognition", "min_sharpness", -0.1),
+        ("recognition", "enrollment_interval_ms", -1),
+    ],
+)
+def test_runtime_timing_and_quality_values_have_valid_ranges(
+    tmp_path, section, field, value
+):
+    data = valid_config()
+    data[section][field] = value
+
+    with pytest.raises(ConfigError, match=field):
+        parse_config(data, tmp_path)
 
 
 def test_votes_cannot_exceed_window(tmp_path):
@@ -67,3 +116,11 @@ def test_runtime_validation_reports_missing_models(tmp_path):
 
     with pytest.raises(ConfigError, match="model file not found"):
         validate_runtime_paths(config)
+
+
+def test_fake_backend_does_not_require_model_files(tmp_path):
+    data = valid_config()
+    data["runtime"]["backend"] = "fake"
+    config = parse_config(data, tmp_path)
+
+    validate_runtime_paths(config)
