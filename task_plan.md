@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 5.1: 成员采集质量与文字可读性修复
+Phase 6: RKNN 模型转换
 
 ## Phases
 
@@ -72,8 +72,8 @@ Phase 5.1: 成员采集质量与文字可读性修复
 - [x] 实现实时清晰度提示与显式高对比度样式
 - [x] 完成自动化、语法和视觉验证
 - [x] 完成 CodeGraph 与提交前验证
-- [ ] 提交并推送修复
-- **Status:** in_progress
+- [x] 提交并推送修复
+- **Status:** complete
 
 ### Phase 6: RKNN 模型转换
 

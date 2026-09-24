@@ -323,7 +323,7 @@
 
 ### Phase 5.1：成员采集质量与文字可读性修复
 
-- **Status:** in_progress
+- **Status:** complete
 - Actions taken:
   - 根据用户实拍截图确认 ONNX 检测正常，采集被清晰度门槛持续拒绝。
   - 截图登记人脸区域估算清晰度为 58.3，当前配置门槛为 100.0。
@@ -336,6 +336,7 @@
   - 生成两张 Windows Qt 截图并完成视觉检查，文字和背景对比度清晰。
   - CodeGraph 同步后索引为 57 个 Python 文件、771 个节点和 1598 条边，状态最新。
   - git diff --check 通过，本地忽略配置已确认使用 40.0。
+  - 修复提交 `cae7cc0` 已推送到 GitHub main，远程哈希与本地一致。
 
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
