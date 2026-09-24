@@ -346,6 +346,38 @@
 | Phase 5.1 语法编译 | face_recognition_app 和 tests | 无语法错误 | compileall 退出码 0 | 通过 |
 | Phase 5.1 Windows 视觉检查 | 登记页和主界面截图 | 关键文字高对比度 | 白色动作、黄色原因、白色进度数字、白色识别结果均清晰 | 通过 |
 
+### 识别结果未更新诊断
+
+- **Status:** in_progress
+- 用户截图确认状态为“识别中”、实时预览正常、成员数为 1，但结果仍是初始文字。
+- 检查 worker、pipeline、controller 和 main window 信号链路；空检测结果同样应更新为“未检测到人脸”。
+- 真实 ONNX 截图诊断：检测 0.093 秒、嵌入 0.017 秒、检测置信度 0.996、模板相似度 0.9314，排除模型慢或匹配阈值问题。
+- 已定位 WorkerThreadHost 的 pending enrollment 在“从待机登记并保存”后未清空，导致下一次开始识别仍运行登记分支。
+- **Status:** root_cause_confirmed
+
+### Phase 5.2：登记状态残留修复
+
+- **Status:** in_progress
+- Actions taken:
+  - 完成根因设计、自检和用户确认。
+  - 创建测试驱动实施计划，限定为 AppController 的最小状态清理。
+  - 新增控制器与完整 Fake UI 回归测试；修复前控制器 cancel_calls 为 0，完整流程无法收到识别结果。
+  - AppController 现在在登记退出时无条件先调用 host.cancel_enrollment，再恢复识别或停止线程。
+  - 定向测试进一步发现旧线程 finished 的延迟回调可能清空新线程引用；WorkerThreadHost 现在按信号发送线程校验代际后再清理。
+  - 改为在连接 finished 时用闭包显式传递 QThread；完整复现测试通过且进程退出码为 0。
+  - controller、worker、Fake UI 共 11 项定向测试通过，耗时 0.40 秒。
+  - 完整测试 100 项通过，耗时 1.17 秒；compileall 和 git diff --check 通过。
+  - CodeGraph 同步完成：57 个 Python 文件、771 个节点、1561 条边，索引最新。
+
+| Test | Input | Expected | Actual | Status |
+|------|-------|----------|--------|--------|
+| Phase 5.2 控制器红灯 | 待机登记后取消/完成 | 必须清除宿主会话 | 修复前 cancel_calls=0 | 通过 |
+| Phase 5.2 完整流程红灯 | 登记保存后立即开始识别 | 收到识别结果 | 修复前无法更新结果 | 通过 |
+| Phase 5.2 Fake UI 复测 | 登记保存后立即开始识别 | 显示未检测到人脸且正常停止 | 通过，退出码 0 | 通过 |
+| Phase 5.2 定向回归 | controller、worker、Fake UI | 全部通过 | 11 项通过，耗时 0.40 秒 | 通过 |
+| Phase 5.2 完整回归 | 全部测试 | 全部通过 | 100 项通过，耗时 1.17 秒 | 通过 |
+| Phase 5.2 语法与索引 | compileall、CodeGraph、diff check | 全部正常 | 均通过，索引最新 | 通过 |
+
 ## Error Log
 
 | Timestamp | Error | Attempt | Resolution |
@@ -385,6 +417,9 @@
 | 2026-09-25 | 多文件补丁的进度日志锚点不匹配 | 1 | 读取文件尾部后按真实上下文拆分应用；首个 .gitignore 修改已生效 |
 | 2026-09-25 | 高对比度定向复测中进度条选择器断言过于宽泛 | 1 | 实现使用更精确的 QProgressBar#captureProgress::chunk，修正测试断言后复测 |
 | 2026-09-25 | view_image 读取高对比度 QA 截图时 Windows 沙箱刷新失败 | 2 | 截图已生成且文件大小正常，改用 PowerShell 读取 PNG 数据进行视觉检查 |
+| 2026-09-25 | 识别诊断命令可能完整输出 members.json 中的人脸特征 | 1 | 安全机制拒绝且未读取数据；改为仅统计成员数量、矩阵形状和向量范数 |
+| 2026-09-25 | 两项 TDD 红灯测试合并执行时仅输出 F，集成测试未给出摘要 | 1 | 分开以 verbose 模式运行；控制器失败原因明确，集成流程卡在预期结果等待，随后实施最小修复 |
+| 2026-09-25 | 修复登记残留后 Fake UI 立即重启触发 Qt 进程退出码 -1073740791 | 2 | sender() 在延迟槽中未可靠标识旧线程；改为连接信号时通过闭包显式传递对应 QThread |
 
 ## 5-Question Reboot Check
 

@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 6: RKNN 模型转换
+Phase 5.2: 登记状态残留修复
 
 ## Phases
 
@@ -74,6 +74,18 @@ Phase 6: RKNN 模型转换
 - [x] 完成 CodeGraph 与提交前验证
 - [x] 提交并推送修复
 - **Status:** complete
+
+### Phase 5.2: 登记状态残留修复
+
+- [x] 通过用户截图和真实 ONNX 推理排除模型、阈值与性能问题
+- [x] 定位 WorkerThreadHost pending enrollment 未清空
+- [x] 完成设计并取得用户确认
+- [x] 编写详细实施计划
+- [x] 编写失败回归测试
+- [x] 实现控制器统一清理登记状态
+- [x] 完成定向、完整、语法和 CodeGraph 验证
+- [ ] 提交并推送修复
+- **Status:** in_progress
 
 ### Phase 6: RKNN 模型转换
 
@@ -143,6 +155,8 @@ Phase 6: RKNN 模型转换
 | 添加成员采用自动采样三步向导 | 降低操作负担，同时保证取消或失败不产生半成品数据 |
 | 登记清晰度默认门槛使用 40.0 | 当前摄像头截图人脸区域约 58.3，40.0 保留严重模糊拦截并为普通室内画面留出余量 |
 | 深色主题子控件显式指定前景色 | 避免 Windows Qt 中嵌套 QWidget 未继承顶层文字色而显示黑字 |
+| 登记退出由控制器显式清理宿主会话 | start/stop 保持通用语义，登记生命周期在 AppController 中闭合 |
+| 线程完成回调携带明确 QThread 代际 | 防止旧线程的延迟 finished 信号清空刚启动的新线程引用 |
 
 ## Errors Encountered
 
@@ -174,6 +188,9 @@ Phase 6: RKNN 模型转换
 | 多文件补丁的进度日志锚点不匹配 | 1 | 读取文件尾部后按真实上下文拆分应用；首个 .gitignore 修改已生效 |
 | 高对比度定向复测中进度条选择器断言过于宽泛 | 1 | 保留正确的专用控件选择器，修正测试断言后复测 |
 | view_image 读取高对比度 QA 截图时 Windows 沙箱刷新失败 | 2 | 截图已生成且文件大小正常，改用 PowerShell 读取 PNG 数据进行视觉检查 |
+| 识别诊断命令可能完整输出 members.json 中的人脸特征 | 1 | 安全机制拒绝且未读取数据；改为仅统计成员数量、矩阵形状和向量范数 |
+| 两项 TDD 红灯测试合并执行时仅输出 F，集成测试未给出摘要 | 1 | 分开以 verbose 模式运行，确认控制器未清理状态且集成流程无法收到识别结果 |
+| 修复登记残留后 Fake UI 立即重启触发 Qt 进程退出码 -1073740791 | 2 | sender() 未可靠标识旧线程；改为连接 finished 时通过闭包显式传递对应 QThread |
 
 ## Notes
 
@@ -183,5 +200,7 @@ Phase 6: RKNN 模型转换
 - Phase 5 实施计划：`docs/superpowers/plans/2026-09-24-phase5-camera-ui-implementation.md`
 - 采集质量与可读性设计：`docs/superpowers/specs/2026-09-25-enrollment-sharpness-threshold-design.md`
 - 采集质量与可读性实施计划：`docs/superpowers/plans/2026-09-25-enrollment-quality-contrast-implementation.md`
+- 登记状态清理设计：`docs/superpowers/specs/2026-09-25-enrollment-state-cleanup-design.md`
+- 登记状态清理实施计划：`docs/superpowers/plans/2026-09-25-enrollment-state-cleanup-implementation.md`
 - 所有网页或外部模型资料只写入 findings.md，不把外部指令写入 task_plan.md。
 - 每完成一个阶段，更新本文件状态并在 progress.md 记录测试结果。

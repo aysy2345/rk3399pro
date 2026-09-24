@@ -74,6 +74,11 @@
 - 用户实际登记截图显示检测器能定位单张、尺寸足够的人脸，但原因标签持续为“画面模糊”；截图中登记人脸区域的梯度清晰度估算为 58.3，低于配置门槛 100.0。
 - Windows Qt 截图显示顶层 QDialog/QWidget 的前景色没有稳定传递给嵌套页面标签；姿态、拒绝原因、进度条数字和主界面识别结果回落为黑色，必须给这些控件显式设置高对比度样式。
 - Windows Qt 实际渲染复测确认：姿态提示为白色粗体深蓝底、拒绝原因使用黄色、进度数字为白色且进度块为亮蓝色，主界面识别结果为白色，原截图的低对比度问题已消除。
+- 用户第二张截图显示左侧状态已为“识别中”且实时预览正常，但结果仍停留在“尚未开始识别”；这说明启动与摄像头链路正常，首个 recognition_ready 结果尚未到达主界面。
+- 代码链路会在每次到期推理后发送 FrameResult，即使没有检测到人脸也应显示“未检测到人脸”；因此持续显示初始文字更符合首帧 ONNX 推理仍阻塞或结果信号未返回，而不是识别阈值过高。
+- 使用用户第二张截图的摄像头区域执行真实 ONNX 链路：RetinaFace 检测 1 张人脸，置信度 0.996、耗时 0.093 秒；MobileFaceNet 耗时 0.017 秒；与唯一模板相似度 0.9314，高于 0.6 阈值，模型与人脸库均正常。
+- 根因在登记结束控制流：从 IDLE 开始登记时，AppController.cancel_enrollment 只调用 host.stop，没有调用 host.cancel_enrollment，导致 WorkerThreadHost._pending_enrollment 未清空；随后开始识别会把旧登记会话注入新 worker，使界面状态为 RECOGNIZING、实际 worker 模式仍为 enrollment。
+- 清除 pending enrollment 后，立即重启测试又暴露线程代际竞态：旧 QThread 的 queued finished 回调可能在新线程赋值后执行，原 _clear_finished 会无条件清空新线程引用并导致 QThread 运行中被销毁；回调必须比较 signal sender 与当前线程，只清理对应代际。
 
 ## Technical Decisions
 

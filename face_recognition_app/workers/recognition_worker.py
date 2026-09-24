@@ -168,7 +168,11 @@ class WorkerThreadHost(QObject):
         worker.enrollment_progress.connect(self.enrollment_progress.emit)
         worker.error_raised.connect(self.error_raised.emit)
         thread.finished.connect(self.finished.emit)
-        thread.finished.connect(self._clear_finished)
+        thread.finished.connect(
+            lambda finished_thread=thread: self._clear_finished(
+                finished_thread
+            )
+        )
         self._worker = worker
         self._thread = thread
         thread.start()
@@ -197,7 +201,8 @@ class WorkerThreadHost(QObject):
         else:
             self._worker.refresh_store(snapshot)
 
-    @pyqtSlot()
-    def _clear_finished(self) -> None:
+    def _clear_finished(self, finished_thread: QThread) -> None:
+        if finished_thread is not self._thread:
+            return
         self._worker = None
         self._thread = None

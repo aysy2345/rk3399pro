@@ -72,8 +72,8 @@ class AppController(QObject):
     def cancel_enrollment(self) -> None:
         if self._state != AppState.ENROLLING:
             return
+        self._host.cancel_enrollment()
         if self._resume_recognition:
-            self._host.cancel_enrollment()
             self._set_state(AppState.RECOGNIZING)
         else:
             self._host.stop()

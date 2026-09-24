@@ -129,6 +129,14 @@ def test_fake_desktop_flow_start_enroll_refresh_manage_and_close(qtbot, tmp_path
     assert window.member_count_label.text() == "成员：1"
     assert bundle.store.load().members[0].name == "张三"
 
+    qtbot.mouseClick(window.start_button, Qt.LeftButton)
+    qtbot.waitUntil(
+        lambda: window.result_label.text() == "未检测到人脸", timeout=2000
+    )
+    assert bundle.controller.state == AppState.RECOGNIZING
+    qtbot.mouseClick(window.stop_button, Qt.LeftButton)
+    assert cameras[1].release_calls == 1
+
     manager = bundle.coordinator.create_member_manager_dialog()
     qtbot.addWidget(manager)
     manager.show()

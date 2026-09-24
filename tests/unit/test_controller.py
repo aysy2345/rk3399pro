@@ -74,6 +74,7 @@ def test_controller_stops_idle_enrollment_on_cancel(qtbot):
     controller.cancel_enrollment()
 
     assert host.start_calls == 1
+    assert host.cancel_calls == 1
     assert host.stop_calls == 1
     assert controller.state == AppState.IDLE
 
