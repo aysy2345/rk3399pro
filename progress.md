@@ -192,7 +192,23 @@
   - `face_recognition_app/ui/video_widget.py`
   - `face_recognition_app/ui/main_window.py`
   - `tests/ui/__init__.py`
-  - `tests/ui/test_main_window.py`
+- `tests/ui/test_main_window.py`
+
+### Phase 5 Task 6：三步成员登记向导
+
+- **Status:** complete
+- Actions taken:
+  - 为成员信息校验、重复编号、同名提示、保存通知与失败路径编写单元测试。
+  - 为三步向导的输入校验、采集门槛、最终确认、取消和保存失败编写离屏界面测试。
+  - TDD 红灯确认两个目标模块尚不存在，符合预期。
+  - 实现 MemberService，统一执行中文业务校验、同名提示、原子新增和成功后的单次快照通知。
+  - 实现三步 EnrollmentWizard；采集完成前不可确认，最终保存前不写成员库，取消和失败均保持无半成品。
+- Files created/modified:
+  - `face_recognition_app/app/member_service.py`
+  - `face_recognition_app/ui/enrollment_wizard.py`
+  - `face_recognition_app/ui/__init__.py`
+  - `tests/unit/test_member_service.py`
+  - `tests/ui/test_enrollment_wizard.py`
 
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
@@ -233,6 +249,11 @@
 | Phase 5 主窗口测试 | `tests/ui/test_main_window.py` | 全部通过 | 6 项通过，耗时 0.27 秒 | 通过 |
 | Phase 5 主窗口视觉检查 | 1100×760 Windows Qt 截图 | 上下分区、中文和四个主按钮正常 | 布局与已批准原型一致 | 通过 |
 | Phase 5 Task 5 完整回归 | 全部离屏测试 | 全部通过 | 65 项通过，耗时 0.71 秒 | 通过 |
+| Phase 5 Task 6 TDD 红灯 | 成员服务与登记向导测试 | 实现前导入失败 | 两个目标模块不存在，符合预期 | 通过 |
+| Phase 5 Task 6 定向测试 | 成员服务与登记向导 | 全部通过 | 13 项通过，耗时 0.46 秒 | 通过 |
+| Phase 5 Task 6 完整回归 | 全部离屏测试 | 全部通过 | 78 项通过，耗时 1.02 秒 | 通过 |
+| Phase 5 Task 6 Python 语法编译 | `face_recognition_app` 和 `tests` | 无语法错误 | `compileall` 退出码 0 | 通过 |
+| Phase 5 Task 6 CodeGraph 同步 | 新增服务、向导与测试 | 索引无待处理变化 | 49 个文件、612 个节点，索引最新 | 通过 |
 
 ## Error Log
 
@@ -258,6 +279,7 @@
 | 2026-09-24 | 主窗口长补丁的 JavaScript 包装字符串出现语法错误 | 1 | 拆分补丁并直接调用 apply_patch，未产生半成品源码 |
 | 2026-09-24 | view_image 因 Windows 沙箱刷新失败无法读取截图 | 2 | 经 PowerShell 读取 PNG Base64 后以内联图片完成检查 |
 | 2026-09-24 | 直接 apply_patch 更新 Task 5 进度时沙箱刷新失败 | 1 | 改用已验证的 UTF-8 Base64 apply-patch 包装命令 |
+| 2026-09-24 | Phase 5 Task 6 首次刷新 CodeGraph 时执行器初始化失败 | 1 | 按既定安全流程重试沙箱外只读索引检查，确认索引最新 |
 
 ## 5-Question Reboot Check
 

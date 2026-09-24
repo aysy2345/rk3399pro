@@ -56,6 +56,9 @@
 - RecognitionWorker 的持续循环不能依赖 queued slot 接收停止命令，因为 run 占用了工作线程事件循环；使用 threading.Event 和短锁更新控制状态后，主线程可安全请求停止、切换登记和刷新快照。
 - PyQt5 5.15.7 在 Python 3.11 下会为 QObject 子类发出 sipPyTypeDict 弃用警告，这是上游绑定层警告；测试无 QThread 残留或功能失败，暂不把警告升级为错误。
 - Qt offscreen 平台能验证控件状态和绘图调用，但本机截图不渲染字体；切换 Windows 平台并把窗口移到屏幕外后，中文、状态、成员数和按钮文字均正常，主界面上下分区比例符合已批准原型。
+- Task 6 可直接复用 `FaceStore.add` 的原子写入与回滚；成员服务只需负责中文业务校验、同名非阻断提示，以及保存成功后的单次快照通知。
+- 登记向导应持有由启动层注入的 `EnrollmentSession` 工厂，并通过 `AppController.begin_enrollment/cancel_enrollment/finish_enrollment` 复用唯一摄像头线程，界面本身不创建摄像头或直接写存储。
+- Task 6 完成后完整测试增至 78 项；新增向导仅在第三步确认时调用成员服务，保存成功才通知工作线程刷新快照。
 
 ## Technical Decisions
 
