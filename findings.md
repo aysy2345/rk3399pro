@@ -50,6 +50,7 @@
 - `IdentityStabilizer` 需要 track_id，但当前没有跟踪器；Phase 5 可使用基于检测框 IoU 的轻量关联生成短时轨迹编号，不引入重型跟踪依赖。
 - 当前测试依赖没有 PyQt5 或 pytest-qt；Phase 5 的离屏 Qt 测试需要补充主机测试依赖，同时继续通过 Fake Camera 和 Fake 推理隔离真实硬件。
 - Windows Python 3.11 测试虚拟环境已成功安装 PyQt5 5.15.7 与 pytest-qt 4.4.0，`pip check` 无冲突；加入新配置测试后完整测试为 37 项。
+- OpenCVCamera 通过 capture_factory 注入后可完整测试打开重试、属性设置、读取错误和释放，不需要在 CI 或开发机测试中占用真实摄像头；Task 2 后完整测试为 42 项。
 
 ## Technical Decisions
 

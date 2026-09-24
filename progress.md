@@ -130,6 +130,19 @@
   - `requirements-rk3399pro.txt`
   - `tests/unit/test_config.py`
 
+### Phase 5 Task 2：USB 摄像头抽象
+
+- **Status:** complete
+- Actions taken:
+  - 先用 StubCapture 编写打开、失败重试、读取错误、幂等释放和上下文管理测试。
+  - 定义 Camera 抽象、CameraError、CameraReadError 和 OpenCVCamera。
+  - 支持摄像头编号、分辨率、目标帧率、有限打开重试和 BGR 帧复制。
+  - 所有自动测试均通过 capture_factory 注入，不访问真实 USB 设备。
+- Files created/modified:
+  - `face_recognition_app/hardware/__init__.py`
+  - `face_recognition_app/hardware/camera.py`
+  - `tests/unit/test_camera.py`
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -155,6 +168,9 @@
 | Phase 5 配置测试 | `tests/unit/test_config.py` | 全部通过 | 14 项通过，耗时 0.14 秒 | 通过 |
 | Phase 5 Task 1 完整回归 | 全部测试 | 全部通过 | 37 项通过，耗时 0.84 秒 | 通过 |
 | Phase 5 Qt 测试依赖 | 测试虚拟环境 | 无依赖冲突 | PyQt5/pytest-qt 可导入，pip check 无错误 | 通过 |
+| Phase 5 Task 2 TDD 红灯 | 摄像头测试 | 实现前导入失败 | Camera 模块不存在，符合预期 | 通过 |
+| Phase 5 摄像头测试 | `tests/unit/test_camera.py` | 全部通过 | 5 项通过，耗时 0.17 秒 | 通过 |
+| Phase 5 Task 2 完整回归 | 全部测试 | 全部通过 | 42 项通过，耗时 0.60 秒 | 通过 |
 
 ## Error Log
 
