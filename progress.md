@@ -381,7 +381,7 @@
 
 ### Phase 5.3：摄像头预览水平翻转
 
-- **Status:** in_progress
+- **Status:** complete
 - Actions taken:
   - 确认现有代码未主动镜像，当前镜像来自摄像头或驱动输入。
   - 用户批准仅在显示层翻转，模型继续使用原始帧。
@@ -394,6 +394,7 @@
   - 完整测试 106 项通过，耗时 1.05 秒；compileall 与 diff check 通过。
   - CodeGraph 同步为 57 个 Python 文件、779 个节点、1561 条边，状态最新。
   - Windows Qt 非对称画面截图确认左右像素翻转，绿色人脸框与标签同步移动到正确位置。
+  - 功能提交 `75ee242` 已推送到 GitHub main，本地与远程哈希一致。
 
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|

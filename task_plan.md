@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 5.3: 摄像头预览水平翻转
+Phase 6: RKNN 模型转换
 
 ## Phases
 
@@ -96,8 +96,8 @@ Phase 5.3: 摄像头预览水平翻转
 - [x] 实现配置化图像翻转和叠加框坐标映射
 - [x] 将配置接入主窗口与登记向导
 - [x] 完成自动化、语法、视觉和 CodeGraph 验证
-- [ ] 提交并推送修复
-- **Status:** in_progress
+- [x] 提交并推送修复
+- **Status:** complete
 
 ### Phase 6: RKNN 模型转换
 
