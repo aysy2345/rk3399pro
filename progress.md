@@ -230,6 +230,29 @@
   - tests/ui/test_enrollment_wizard.py
   - tests/ui/test_member_manager_dialog.py
 
+### Phase 5 Task 8：后端工厂、启动入口与完整集成
+
+- **Status:** complete
+- Actions taken:
+  - 恢复已批准的 Phase 5 启动流程、后端切换和集成测试边界。
+  - 刷新 CodeGraph，确认 Task 7 提交后的索引最新。
+  - 为后端工厂、命令行覆盖和 Fake 摄像头端到端流程编写失败测试。
+  - TDD 红灯确认 bootstrap.py 与 main.py 尚不存在，符合预期。
+  - 实现 BackendFactory、依赖组装、桌面协调器和命令行启动入口。
+  - 使用注入的 Fake 摄像头与 Fake 后端跑通待机、识别、登记、刷新、管理和关闭。
+  - 更新 README 的主机安装、Fake/ONNX 启动、USB 摄像头检查和常见问题。
+- Files created/modified:
+  - face_recognition_app/app/bootstrap.py
+  - face_recognition_app/main.py
+  - tests/unit/test_bootstrap.py
+  - tests/unit/test_main.py
+  - tests/integration/__init__.py
+  - tests/integration/test_fake_ui_flow.py
+  - README.md
+  - findings.md
+  - progress.md
+  - task_plan.md
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -279,6 +302,13 @@
 | Phase 5 Task 7 完整回归 | 全部离屏测试 | 全部通过 | 85 项通过，耗时 1.21 秒 | 通过 |
 | Phase 5 Task 7 Python 语法编译 | face_recognition_app 和 tests | 无语法错误 | compileall 退出码 0 | 通过 |
 | Phase 5 Task 7 CodeGraph 同步 | 新增成员管理源码与测试 | 索引无待处理变化 | 51 个文件、673 个节点，索引最新 | 通过 |
+| Phase 5 Task 8 TDD 红灯 | 后端工厂、命令行与 Fake UI 集成测试 | 实现前导入失败 | bootstrap.py 与 main.py 不存在，符合预期 | 通过 |
+| Phase 5 Task 8 定向测试 | 后端工厂、命令行与 Fake UI 集成测试 | 全部通过 | 8 项通过，耗时 0.54 秒 | 通过 |
+| Phase 5 Task 8 完整回归 | 全部离屏测试 | 全部通过且无残留 QThread | 93 项通过，耗时 1.31 秒 | 通过 |
+| Phase 5 Task 8 Python 语法编译 | face_recognition_app 和 tests | 无语法错误 | compileall 退出码 0 | 通过 |
+| Phase 5 Task 8 CLI 检查 | python -m face_recognition_app.main --help | 参数完整可解析 | config、backend、camera-index 均正常 | 通过 |
+| Phase 5 Task 8 README 链接 | README 本地相对链接 | 全部目标存在 | 无缺失链接 | 通过 |
+| Phase 5 Task 8 CodeGraph 同步 | 启动层、入口与集成测试 | 索引无待处理变化 | 57 个文件、760 个节点，索引最新 | 通过 |
 
 ## Error Log
 
@@ -307,6 +337,8 @@
 | 2026-09-24 | Phase 5 Task 6 首次刷新 CodeGraph 时执行器初始化失败 | 1 | 按既定安全流程重试沙箱外只读索引检查，确认索引最新 |
 | 2026-09-24 | Task 7 进度补丁先后发生模板解析和跨文件锚点不匹配 | 3 | 分开更新计划文件并改用实际存在的稳定锚点，未产生源码改动 |
 | 2026-09-25 | Task 7 首次 GitHub 推送因自动审批额度到期未执行 | 1 | 未绕过审批；额度恢复后继续执行原推送并核对哈希 |
+| 2026-09-25 | Task 8 首次读取时假定 ONNX 检测器和识别器分属两个文件 | 1 | 使用 rg 定位到统一的 inference/onnx_backend.py，并读取真实构造接口 |
+| 2026-09-25 | Task 8 README 长补丁包含未转义的 Markdown 代码围栏，导致 JavaScript 解析失败 | 1 | 改用缩进代码块并拆除反引号后重新应用，未产生文件改动 |
 
 ## 5-Question Reboot Check
 

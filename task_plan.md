@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 5: 摄像头、工作线程与桌面界面
+Phase 6: RKNN 模型转换
 
 ## Phases
 
@@ -59,8 +59,8 @@ Phase 5: 摄像头、工作线程与桌面界面
 - [x] 实现 PyQt5 主窗口
 - [x] 实现添加新成员流程
 - [x] 实现成员管理流程
-- [ ] 使用 Fake 后端完成界面与线程集成测试
-- **Status:** in_progress
+- [x] 使用 Fake 后端完成界面与线程集成测试
+- **Status:** complete
 
 ### Phase 6: RKNN 模型转换
 
@@ -151,6 +151,8 @@ Phase 5: 摄像头、工作线程与桌面界面
 
 | Task 7 进度补丁先后发生模板解析和跨文件锚点不匹配 | 3 | 分开更新计划文件并改用实际存在的 Notes 标题作为稳定锚点，未产生源码改动 |
 | Task 7 首次 GitHub 推送因自动审批额度到期未执行 | 1 | 未绕过审批；额度恢复后继续执行原推送并核对哈希 |
+| Task 8 首次读取时假定 ONNX 检测器和识别器分属两个文件 | 1 | 使用 rg 定位到统一的 inference/onnx_backend.py，并读取真实构造接口 |
+| Task 8 README 长补丁包含未转义的 Markdown 代码围栏，导致 JavaScript 解析失败 | 1 | 改用缩进代码块并拆除反引号后重新应用，未产生文件改动 |
 
 ## Notes
 
