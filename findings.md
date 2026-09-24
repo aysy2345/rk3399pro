@@ -44,6 +44,11 @@
 - 已浅克隆并检查该固定 commit：RetinaFace 权重大小 1,789,735 字节，SHA-256 为 `2979b33ffafda5d74b6948cd7a5b9a7a62f62b949cef24e95fd15d2883a65220`。网络输出确为 `loc/conf/landmarks` 三张量，测试阶段对分类输出执行 softmax；预处理与 anchor 配置和当前 ONNX 适配器一致。
 - 候选源码的 `cfg_mnet.pretrain=True` 会在构造网络时额外读取一个未随子目录提供的 ImageNet backbone 权重。导出时应复制配置并改为 `pretrain=False`，再加载完整的 `mobilenet0.25_Final.pth`，避免无关文件依赖。
 - RetinaFace 已使用 PyTorch 2.11.0、torchvision 0.26.0 导出为 ONNX opset 11，ONNX SHA-256 为 `34274686d588a0c0936ad2b851513c5a0d97cd69a3244129525d405509bed0b3`。边框、分数、关键点相对 PyTorch 的最大绝对误差分别为 `1.0550e-05`、`1.1921e-07`、`1.6492e-05`，三者余弦相似度均高于 `0.999999999998`。
+- Phase 5 规划核对发现：`FaceStore` 已完整提供 add、rename、replace_embedding 和 delete，可由成员服务直接编排，无需重写存储层。
+- 当前 `AppConfig` 尚无 backend、目标帧率、清晰度门槛和采样间隔字段；Phase 5 必须先扩展配置和示例，再建立启动工厂。
+- 当前质量检查只覆盖单人、人脸尺寸和清晰度，尚未根据五点关键点判断正视、左转和右转；自动采样前需要补充姿态估计与姿态配额。
+- `IdentityStabilizer` 需要 track_id，但当前没有跟踪器；Phase 5 可使用基于检测框 IoU 的轻量关联生成短时轨迹编号，不引入重型跟踪依赖。
+- 当前测试依赖没有 PyQt5 或 pytest-qt；Phase 5 的离屏 Qt 测试需要补充主机测试依赖，同时继续通过 Fake Camera 和 Fake 推理隔离真实硬件。
 
 ## Technical Decisions
 

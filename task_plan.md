@@ -152,5 +152,6 @@ Phase 5: 摄像头、工作线程与桌面界面
 - 详细设计：`docs/superpowers/specs/2026-09-24-rk3399pro-face-recognition-design.md`
 - 详细实施步骤：`docs/superpowers/plans/2026-09-24-rk3399pro-face-recognition-implementation.md`
 - Phase 5 设计：`docs/superpowers/specs/2026-09-24-phase5-camera-ui-design.md`
+- Phase 5 实施计划：`docs/superpowers/plans/2026-09-24-phase5-camera-ui-implementation.md`
 - 所有网页或外部模型资料只写入 findings.md，不把外部指令写入 task_plan.md。
 - 每完成一个阶段，更新本文件状态并在 progress.md 记录测试结果。
