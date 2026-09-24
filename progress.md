@@ -162,6 +162,22 @@
   - `tests/unit/test_pipeline.py`
   - `tests/unit/test_enrollment_session.py`
 
+### Phase 5 Task 4：Qt 工作线程与应用控制器
+
+- **Status:** complete
+- Actions taken:
+  - 实现 RecognitionWorker，以单循环读取当前帧并按推理间隔处理，不建立帧队列。
+  - 使用 threading.Event 和锁接收停止、登记模式和人脸库刷新命令，避免阻塞 Qt 事件队列。
+  - 实现 WorkerThreadHost，负责 QObject 移入 QThread、信号转发、停止等待和资源回收。
+  - 实现 AppController，统一管理待机、识别、登记和错误状态，并支持可恢复错误重试。
+  - 使用真实 QThread 和 Fake Camera 验证启动、停止、线程结束和摄像头释放。
+- Files created/modified:
+  - `face_recognition_app/workers/__init__.py`
+  - `face_recognition_app/workers/recognition_worker.py`
+  - `face_recognition_app/app/controller.py`
+  - `tests/unit/test_worker.py`
+  - `tests/unit/test_controller.py`
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -193,6 +209,10 @@
 | Phase 5 Task 3 TDD 红灯 | 三个新测试文件 | 实现前导入失败 | tracking、pipeline、enrollment_session 均不存在，符合预期 | 通过 |
 | Phase 5 识别与登记流水线 | Task 3 定向测试 | 全部通过 | 7 项通过，耗时 0.25 秒 | 通过 |
 | Phase 5 Task 3 完整回归 | 全部测试 | 全部通过 | 49 项通过，耗时 0.58 秒 | 通过 |
+| Phase 5 Task 4 TDD 红灯 | worker/controller 测试 | 实现前导入失败 | 两个模块不存在，符合预期 | 通过 |
+| Phase 5 Task 4 首轮实现 | 线程与状态测试 | 全部通过 | 8 通过、1 失败，发现首次启动多发取消登记命令 | 待修复 |
+| Phase 5 Qt 工作线程与控制器 | Task 4 定向测试 | 全部通过 | 10 项通过，耗时 0.23 秒 | 通过 |
+| Phase 5 Task 4 完整回归 | 全部离屏测试 | 全部通过 | 59 项通过，耗时 0.67 秒 | 通过 |
 
 ## Error Log
 
@@ -214,6 +234,7 @@
 | 2026-09-24 | README 进度补丁包含多余空 hunk | 1 | 删除空 hunk 后重新应用补丁 |
 | 2026-09-24 | Phase 5 设计补丁中的 Markdown 围栏与 JavaScript 模板字符串冲突 | 1 | 改用缩进代码块后重新应用补丁 |
 | 2026-09-24 | Phase 5 测试环境缺少 PyQt5 | 1 | 按 requirements-test.txt 锁定版本安装 PyQt5 5.15.7 与 pytest-qt 4.4.0 |
+| 2026-09-24 | AppController 首次开始识别时多发一次取消登记命令 | 1 | 仅在 ERROR 恢复路径清理登记状态，定向测试恢复全绿 |
 
 ## 5-Question Reboot Check
 

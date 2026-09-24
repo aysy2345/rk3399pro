@@ -53,6 +53,8 @@
 - OpenCVCamera 通过 capture_factory 注入后可完整测试打开重试、属性设置、读取错误和释放，不需要在 CI 或开发机测试中占用真实摄像头；Task 2 后完整测试为 42 项。
 - IoU 轻量轨迹足以为当前连续帧投票提供短时 track_id，无需在 Phase 5 引入复杂跟踪器；识别与登记流水线保持纯 Python 后，Qt 工作线程可以只承担摄像头循环和信号转发。
 - 自动登记默认姿态配额由目标样本数生成：正视占余数和约一半样本，左转与右转各约四分之一；关键点姿态、质量、时间间隔和特征相似度均通过后才计数。
+- RecognitionWorker 的持续循环不能依赖 queued slot 接收停止命令，因为 run 占用了工作线程事件循环；使用 threading.Event 和短锁更新控制状态后，主线程可安全请求停止、切换登记和刷新快照。
+- PyQt5 5.15.7 在 Python 3.11 下会为 QObject 子类发出 sipPyTypeDict 弃用警告，这是上游绑定层警告；测试无 QThread 残留或功能失败，暂不把警告升级为错误。
 
 ## Technical Decisions
 
