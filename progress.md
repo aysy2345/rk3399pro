@@ -178,6 +178,22 @@
   - `tests/unit/test_worker.py`
   - `tests/unit/test_controller.py`
 
+### Phase 5 Task 5：PyQt5 主窗口
+
+- **Status:** complete
+- Actions taken:
+  - 实现上下分区主窗口：上方视频画面，下方状态、识别结果、成员数和操作按钮。
+  - 实现 BGR 到 QImage 的深复制、等比例缩放、人脸框、姓名和相似度绘制。
+  - 根据待机、识别、登记和错误状态统一更新按钮与提示。
+  - 支持开始、停止、添加成员、成员管理、错误重试和关闭资源释放。
+  - 使用 Qt 离屏测试和 Windows 平台截图完成逻辑与视觉检查。
+- Files created/modified:
+  - `face_recognition_app/ui/__init__.py`
+  - `face_recognition_app/ui/video_widget.py`
+  - `face_recognition_app/ui/main_window.py`
+  - `tests/ui/__init__.py`
+  - `tests/ui/test_main_window.py`
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -213,6 +229,10 @@
 | Phase 5 Task 4 首轮实现 | 线程与状态测试 | 全部通过 | 8 通过、1 失败，发现首次启动多发取消登记命令 | 待修复 |
 | Phase 5 Qt 工作线程与控制器 | Task 4 定向测试 | 全部通过 | 10 项通过，耗时 0.23 秒 | 通过 |
 | Phase 5 Task 4 完整回归 | 全部离屏测试 | 全部通过 | 59 项通过，耗时 0.67 秒 | 通过 |
+| Phase 5 Task 5 TDD 红灯 | 主窗口离屏测试 | 实现前导入失败 | ui 包不存在，符合预期 | 通过 |
+| Phase 5 主窗口测试 | `tests/ui/test_main_window.py` | 全部通过 | 6 项通过，耗时 0.27 秒 | 通过 |
+| Phase 5 主窗口视觉检查 | 1100×760 Windows Qt 截图 | 上下分区、中文和四个主按钮正常 | 布局与已批准原型一致 | 通过 |
+| Phase 5 Task 5 完整回归 | 全部离屏测试 | 全部通过 | 65 项通过，耗时 0.71 秒 | 通过 |
 
 ## Error Log
 
@@ -235,6 +255,9 @@
 | 2026-09-24 | Phase 5 设计补丁中的 Markdown 围栏与 JavaScript 模板字符串冲突 | 1 | 改用缩进代码块后重新应用补丁 |
 | 2026-09-24 | Phase 5 测试环境缺少 PyQt5 | 1 | 按 requirements-test.txt 锁定版本安装 PyQt5 5.15.7 与 pytest-qt 4.4.0 |
 | 2026-09-24 | AppController 首次开始识别时多发一次取消登记命令 | 1 | 仅在 ERROR 恢复路径清理登记状态，定向测试恢复全绿 |
+| 2026-09-24 | 主窗口长补丁的 JavaScript 包装字符串出现语法错误 | 1 | 拆分补丁并直接调用 apply_patch，未产生半成品源码 |
+| 2026-09-24 | view_image 因 Windows 沙箱刷新失败无法读取截图 | 2 | 经 PowerShell 读取 PNG Base64 后以内联图片完成检查 |
+| 2026-09-24 | 直接 apply_patch 更新 Task 5 进度时沙箱刷新失败 | 1 | 改用已验证的 UTF-8 Base64 apply-patch 包装命令 |
 
 ## 5-Question Reboot Check
 
