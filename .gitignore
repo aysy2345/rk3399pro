@@ -1,0 +1,35 @@
+# Local indexes and IDE metadata
+.codegraph/
+.idea/
+.vscode/
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Operating-system images and installers
+*.iso
+*.img
+*.img.*
+*.exe
+*.msi
+
+# Large archives, datasets, and packaged course resources
+*.rar
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+
+# Temporary Office files
+~$*
+
+# Logs and local temporary files
+*.log
+*.tmp
+*.temp
+
