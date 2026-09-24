@@ -210,6 +210,26 @@
   - `tests/unit/test_member_service.py`
   - `tests/ui/test_enrollment_wizard.py`
 
+### Phase 5 Task 7：表格式成员管理
+
+- **Status:** complete
+- Actions taken:
+  - 恢复已批准的 Phase 5 设计与实施边界。
+  - 刷新 CodeGraph，确认 Task 6 提交后的索引最新。
+  - 为成员列表、改名、删除、重新采集与搜索过滤编写失败测试。
+  - TDD 红灯确认成员管理对话框尚不存在，符合预期。
+  - 扩展 MemberService，统一提供列表、改名、特征替换、删除和成功后的单次快照通知。
+  - 实现可搜索表格、行内姓名编辑、删除确认和重新采集入口。
+  - 扩展 EnrollmentWizard 的重新采集模式，取消或失败时保留旧特征，最终确认后才替换。
+- Files created/modified:
+  - face_recognition_app/app/member_service.py
+  - face_recognition_app/ui/enrollment_wizard.py
+  - face_recognition_app/ui/member_manager_dialog.py
+  - face_recognition_app/ui/__init__.py
+  - tests/unit/test_member_service.py
+  - tests/ui/test_enrollment_wizard.py
+  - tests/ui/test_member_manager_dialog.py
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -254,6 +274,11 @@
 | Phase 5 Task 6 完整回归 | 全部离屏测试 | 全部通过 | 78 项通过，耗时 1.02 秒 | 通过 |
 | Phase 5 Task 6 Python 语法编译 | `face_recognition_app` 和 `tests` | 无语法错误 | `compileall` 退出码 0 | 通过 |
 | Phase 5 Task 6 CodeGraph 同步 | 新增服务、向导与测试 | 索引无待处理变化 | 49 个文件、612 个节点，索引最新 | 通过 |
+| Phase 5 Task 7 TDD 红灯 | 成员服务、管理对话框与重新采集测试 | 实现前导入失败 | member_manager_dialog 模块不存在，符合预期 | 通过 |
+| Phase 5 Task 7 定向测试 | 成员服务、管理表格与重新采集 | 全部通过 | 20 项通过，耗时 0.73 秒 | 通过 |
+| Phase 5 Task 7 完整回归 | 全部离屏测试 | 全部通过 | 85 项通过，耗时 1.21 秒 | 通过 |
+| Phase 5 Task 7 Python 语法编译 | face_recognition_app 和 tests | 无语法错误 | compileall 退出码 0 | 通过 |
+| Phase 5 Task 7 CodeGraph 同步 | 新增成员管理源码与测试 | 索引无待处理变化 | 51 个文件、673 个节点，索引最新 | 通过 |
 
 ## Error Log
 
@@ -280,6 +305,8 @@
 | 2026-09-24 | view_image 因 Windows 沙箱刷新失败无法读取截图 | 2 | 经 PowerShell 读取 PNG Base64 后以内联图片完成检查 |
 | 2026-09-24 | 直接 apply_patch 更新 Task 5 进度时沙箱刷新失败 | 1 | 改用已验证的 UTF-8 Base64 apply-patch 包装命令 |
 | 2026-09-24 | Phase 5 Task 6 首次刷新 CodeGraph 时执行器初始化失败 | 1 | 按既定安全流程重试沙箱外只读索引检查，确认索引最新 |
+| 2026-09-24 | Task 7 进度补丁先后发生模板解析和跨文件锚点不匹配 | 3 | 分开更新计划文件并改用实际存在的稳定锚点，未产生源码改动 |
+| 2026-09-25 | Task 7 首次 GitHub 推送因自动审批额度到期未执行 | 1 | 未绕过审批；额度恢复后继续执行原推送并核对哈希 |
 
 ## 5-Question Reboot Check
 

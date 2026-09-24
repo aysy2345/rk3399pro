@@ -76,3 +76,57 @@ def test_add_member_does_not_notify_when_store_save_fails():
         service.add_member("001", "张三", np.array([1.0, 0.0]))
 
     assert snapshots == []
+
+
+def test_list_rename_replace_and_delete_members(tmp_path):
+    snapshots = []
+    service = MemberService(FaceStore(tmp_path), snapshots.append)
+    service.add_member("001", "张三", np.array([1.0, 0.0], dtype=np.float32))
+    service.add_member("002", "李四", np.array([0.0, 1.0], dtype=np.float32))
+    snapshots.clear()
+
+    loaded = service.list_members()
+    assert [member.member_id for member in loaded.members] == ["001", "002"]
+
+    renamed = service.rename_member("001", " 张小三 ")
+    assert renamed.members[0].name == "张小三"
+    replaced = service.replace_member_embedding(
+        "001", np.array([1.0, 1.0], dtype=np.float32)
+    )
+    np.testing.assert_allclose(
+        replaced.embeddings[0],
+        np.array([1.0, 1.0]) / np.sqrt(2.0),
+    )
+    deleted = service.delete_member("002")
+    assert [member.member_id for member in deleted.members] == ["001"]
+    assert snapshots == [renamed, replaced, deleted]
+
+
+def test_member_updates_validate_input_and_wrap_store_errors():
+    class FailingStore:
+        def load(self):
+            raise FaceStoreError("broken")
+
+        def rename(self, member_id, name):
+            raise FaceStoreError("disk full")
+
+        def replace_embedding(self, member_id, embedding):
+            raise FaceStoreError("disk full")
+
+        def delete(self, member_id):
+            raise FaceStoreError("disk full")
+
+    snapshots = []
+    service = MemberService(FailingStore(), snapshots.append)
+
+    with pytest.raises(MemberServiceError, match="读取成员库失败"):
+        service.list_members()
+    with pytest.raises(MemberServiceError, match="姓名不能为空"):
+        service.rename_member("001", " ")
+    with pytest.raises(MemberServiceError, match="修改姓名失败"):
+        service.rename_member("001", "张三")
+    with pytest.raises(MemberServiceError, match="更新人脸特征失败"):
+        service.replace_member_embedding("001", np.array([1.0, 0.0]))
+    with pytest.raises(MemberServiceError, match="删除成员失败"):
+        service.delete_member("001")
+    assert snapshots == []

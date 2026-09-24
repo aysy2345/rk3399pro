@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QDialog
 from face_recognition_app.app.member_service import MemberDraft, MemberServiceError
 from face_recognition_app.core.enrollment import EnrollmentTemplate
 from face_recognition_app.core.enrollment_session import EnrollmentProgress
+from face_recognition_app.domain.member import Member
 from face_recognition_app.ui.enrollment_wizard import EnrollmentWizard
 
 
@@ -43,6 +44,7 @@ class StubSession:
 class StubMemberService:
     def __init__(self):
         self.add_calls = []
+        self.replace_calls = []
         self.validation_error = None
         self.save_error = None
         self.same_name_warning = False
@@ -58,6 +60,12 @@ class StubMemberService:
         if self.save_error:
             raise self.save_error
         self.add_calls.append((member_id, name, embedding.copy()))
+        return object()
+
+    def replace_member_embedding(self, member_id, embedding):
+        if self.save_error:
+            raise self.save_error
+        self.replace_calls.append((member_id, embedding.copy()))
         return object()
 
 
@@ -169,3 +177,32 @@ def test_wizard_save_failure_stays_open_and_can_retry(qtbot):
     assert controller.finish_calls == 0
     assert controller.cancel_calls == 0
     assert wizard.save_button.isEnabled()
+
+
+def test_reenrollment_skips_information_and_replaces_only_on_confirm(qtbot):
+    controller = StubController()
+    service = StubMemberService()
+    session = StubSession()
+    member = Member.create("001", "张三")
+    wizard = EnrollmentWizard(
+        controller, service, lambda: session, member=member
+    )
+    qtbot.addWidget(wizard)
+    wizard.show()
+
+    assert wizard.windowTitle() == "重新采集成员"
+    assert wizard.pages.currentIndex() == 1
+    assert controller.begin_calls == [session]
+    assert not wizard.capture_back_button.isVisible()
+    assert service.replace_calls == []
+
+    complete_capture(controller)
+    qtbot.mouseClick(wizard.capture_next_button, Qt.LeftButton)
+    assert "重新采集" in wizard.summary_label.text()
+    qtbot.mouseClick(wizard.save_button, Qt.LeftButton)
+
+    assert len(service.replace_calls) == 1
+    assert service.replace_calls[0][0] == "001"
+    np.testing.assert_allclose(service.replace_calls[0][1], session.template.embedding)
+    assert service.add_calls == []
+    assert controller.finish_calls == 1

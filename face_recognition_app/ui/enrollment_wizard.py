@@ -24,6 +24,7 @@ from face_recognition_app.core.enrollment_session import (
     EnrollmentProgress,
     POSE_LABELS,
 )
+from face_recognition_app.domain.member import Member
 from face_recognition_app.ui.video_widget import VideoWidget
 
 
@@ -36,6 +37,7 @@ class EnrollmentWizard(QDialog):
         member_service: Any,
         session_factory: Callable[[], Any],
         parent: Optional[QWidget] = None,
+        member: Optional[Member] = None,
     ) -> None:
         super().__init__(parent)
         self._controller = controller
@@ -46,12 +48,17 @@ class EnrollmentWizard(QDialog):
         self._template = None
         self._enrollment_active = False
         self._saving = False
-        self.setWindowTitle("添加新成员")
+        self._existing_member = member
+        self.setWindowTitle(
+            "重新采集成员" if member is not None else "添加新成员"
+        )
         self.setModal(True)
         self.resize(820, 650)
         self._build_ui()
         controller.preview_ready.connect(self.video_widget.set_frame)
         controller.enrollment_progress.connect(self._on_progress)
+        if member is not None:
+            self._begin_reenrollment(member)
 
     def _build_ui(self) -> None:
         layout = QVBoxLayout(self)
@@ -190,8 +197,6 @@ class EnrollmentWizard(QDialog):
             self._show_error(str(exc))
             return
         self._draft = draft
-        self._session = session
-        self._template = None
         if draft.same_name_warning:
             self.same_name_label.setText(
                 "已有同名成员；编号不同仍可继续，请确认没有选错人员。"
@@ -199,6 +204,27 @@ class EnrollmentWizard(QDialog):
             self.same_name_label.show()
         else:
             self.same_name_label.hide()
+        self._begin_capture(session)
+        self.pages.setCurrentIndex(1)
+        self.step_label.setText("步骤 2/3 · 自动采集")
+
+    def _begin_reenrollment(self, member: Member) -> None:
+        self._draft = MemberDraft(member.member_id, member.name, False)
+        self.member_id_edit.setText(member.member_id)
+        self.name_edit.setText(member.name)
+        self.capture_back_button.hide()
+        try:
+            session = self._session_factory()
+        except (ValueError, RuntimeError) as exc:
+            self._show_error("无法开始重新采集：{}".format(exc))
+            return
+        self._begin_capture(session)
+        self.pages.setCurrentIndex(1)
+        self.step_label.setText("步骤 1/2 · 自动采集")
+
+    def _begin_capture(self, session: Any) -> None:
+        self._session = session
+        self._template = None
         self.capture_progress.setRange(0, 15)
         self.capture_progress.setValue(0)
         self.capture_next_button.setEnabled(False)
@@ -206,8 +232,6 @@ class EnrollmentWizard(QDialog):
         self.reason_label.setText("等待有效样本")
         self._controller.begin_enrollment(session)
         self._enrollment_active = True
-        self.pages.setCurrentIndex(1)
-        self.step_label.setText("步骤 2/3 · 自动采集")
 
     def _on_progress(self, progress: EnrollmentProgress) -> None:
         if not self._enrollment_active or self.pages.currentIndex() != 1:
@@ -231,18 +255,26 @@ class EnrollmentWizard(QDialog):
         except (ValueError, RuntimeError) as exc:
             self._show_error("无法生成成员特征：{}".format(exc))
             return
+        action = "重新采集" if self._existing_member is not None else "添加成员"
         self.summary_label.setText(
-            "成员编号：{}\n姓名：{}\n有效样本：{}\n\n"
+            "{}\n成员编号：{}\n姓名：{}\n有效样本：{}\n\n"
             "确认后才会写入本地成员库。".format(
+                action,
                 self._draft.member_id,
                 self._draft.name,
                 self._template.accepted_samples,
             )
         )
         self.pages.setCurrentIndex(2)
-        self.step_label.setText("步骤 3/3 · 确认保存")
+        self.step_label.setText(
+            "步骤 2/2 · 确认保存"
+            if self._existing_member is not None
+            else "步骤 3/3 · 确认保存"
+        )
 
     def _back_to_information(self) -> None:
+        if self._existing_member is not None:
+            return
         if self._enrollment_active:
             self._controller.cancel_enrollment()
             self._enrollment_active = False
@@ -254,7 +286,11 @@ class EnrollmentWizard(QDialog):
     def _back_to_capture(self) -> None:
         self._clear_error()
         self.pages.setCurrentIndex(1)
-        self.step_label.setText("步骤 2/3 · 自动采集")
+        self.step_label.setText(
+            "步骤 1/2 · 自动采集"
+            if self._existing_member is not None
+            else "步骤 2/3 · 自动采集"
+        )
 
     def _save(self) -> None:
         if self._saving or self._draft is None or self._template is None:
@@ -264,11 +300,17 @@ class EnrollmentWizard(QDialog):
         self.cancel_button.setEnabled(False)
         self._clear_error()
         try:
-            snapshot = self._member_service.add_member(
-                self._draft.member_id,
-                self._draft.name,
-                self._template.embedding,
-            )
+            if self._existing_member is not None:
+                snapshot = self._member_service.replace_member_embedding(
+                    self._draft.member_id,
+                    self._template.embedding,
+                )
+            else:
+                snapshot = self._member_service.add_member(
+                    self._draft.member_id,
+                    self._draft.name,
+                    self._template.embedding,
+                )
         except (MemberServiceError, ValueError, RuntimeError) as exc:
             self._show_error(str(exc))
             self._saving = False

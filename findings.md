@@ -59,6 +59,8 @@
 - Task 6 可直接复用 `FaceStore.add` 的原子写入与回滚；成员服务只需负责中文业务校验、同名非阻断提示，以及保存成功后的单次快照通知。
 - 登记向导应持有由启动层注入的 `EnrollmentSession` 工厂，并通过 `AppController.begin_enrollment/cancel_enrollment/finish_enrollment` 复用唯一摄像头线程，界面本身不创建摄像头或直接写存储。
 - Task 6 完成后完整测试增至 78 项；新增向导仅在第三步确认时调用成员服务，保存成功才通知工作线程刷新快照。
+- Task 7 的成员管理对话框通过 MemberService 获取和修改快照；改名、删除与特征替换成功后由同一回调刷新识别线程，对话框额外发出 members_changed 供主窗口更新人数。
+- 重新采集模式跳过基本信息页，成员编号和姓名保持不变；旧特征直到确认保存时才由 FaceStore.replace_embedding 原子替换。
 
 ## Technical Decisions
 
