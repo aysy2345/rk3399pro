@@ -31,11 +31,23 @@
 
 ### Phase 3: 项目骨架与纯算法核心
 
-- **Status:** in_progress
+- **Status:** complete
 - Actions taken:
   - 定义本阶段范围为配置、人脸库、对齐、质量、匹配、稳定器、登记聚合及单元测试。
+  - 创建配置、领域模型、人脸库与纯算法核心。
+  - 创建标准 Windows Python 3.11 测试环境和 20 项单元测试。
+  - 补充五点人脸对齐测试，最终 22 项测试全部通过。
+  - 完成 Python 语法编译检查并同步 CodeGraph。
 - Files created/modified:
-  - 尚未创建源码文件。
+  - `face_recognition_app/app/config.py`
+  - `face_recognition_app/domain/`
+  - `face_recognition_app/core/`
+  - `face_recognition_app/storage/face_store.py`
+  - `configs/app.example.json`
+  - `requirements-dev.txt`
+  - `requirements-rk3399pro.txt`
+  - `requirements-test.txt`
+  - `tests/unit/`
 
 ## Test Results
 
@@ -44,6 +56,10 @@
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
 | Git 工作区状态 | `git status --short` | 无未提交文件 | 在新增计划文件前为空 | 通过 |
 | CodeGraph 状态 | 当前仓库 | 索引可用 | 索引存在，当前无源码节点 | 通过 |
+| Phase 3 首轮单元测试 | 20 项 | 全部通过 | 19 通过，1 个测试断言类型错误 | 待复测 |
+| Phase 3 完整单元测试 | 22 项 | 全部通过 | 22 项通过，耗时 0.63 秒 | 通过 |
+| Python 语法编译 | `face_recognition_app` | 无语法错误 | `compileall` 退出码 0 | 通过 |
+| CodeGraph 同步 | 新增源码 | 索引新增源码 | 18 个文件、155 个节点 | 通过 |
 
 ## Error Log
 
@@ -52,14 +68,19 @@
 | 2026-09-24 | `writing-plans` 技能路径不存在 | 1 | 使用 planning-with-files 作为持久化计划替代方案 |
 | 2026-09-24 | Git 初始化后命令执行器报告 `setup refresh had errors` | 1 | 经用户批准后使用沙箱外 Git 命令 |
 | 2026-09-24 | 首次 Git 推送未立即建立远程跟踪 | 1 | 改用 HTTP/1.1、提高 postBuffer，重试后核对本地与远程哈希 |
+| 2026-09-24 | Phase 3 普通环境检查再次报告 `setup refresh had errors` | 1 | 不重复普通执行，改用沙箱外只读检查 |
+| 2026-09-24 | 本机 Python 3.11 缺少 pytest、NumPy 和 OpenCV | 1 | 先创建依赖清单，随后在项目虚拟环境安装测试依赖 |
+| 2026-09-24 | PowerShell 未直接执行 `.\.venv\Scripts\python.exe` | 1 | 改用 PowerShell 调用运算符 `&`，保留已创建的虚拟环境 |
+| 2026-09-24 | 加调用运算符后仍找不到 `.venv\Scripts\python.exe` | 2 | 确认解释器为 MSYS2 Python，虚拟环境使用 Unix 风格 `.venv\bin\python.exe` |
+| 2026-09-24 | MSYS2 Python 安装 NumPy 时只取得源码包且未完成安装 | 1 | 发现系统另有标准 Windows Python 3.11，改建 `.test-venv` 使用官方 wheel |
+| 2026-09-24 | 20 项测试中 1 项因 `pytest.approx` 不支持嵌套列表失败 | 1 | 改用 `numpy.testing.assert_allclose`；人脸库回滚内容本身正确 |
 
 ## 5-Question Reboot Check
 
 | Question | Answer |
 |----------|--------|
-| Where am I? | Phase 3，项目骨架与纯算法核心 |
-| Where am I going? | ONNX、摄像头与 UI、RKNN 转换、板端集成、阈值校准和交付 |
+| Where am I? | Phase 4，ONNX 推理与模型验证 |
+| Where am I going? | 摄像头与 UI、RKNN 转换、板端集成、阈值校准和交付 |
 | What's the goal? | 在 RK3399Pro 上交付支持 50 人以内和成员管理的本地人脸识别应用 |
 | What have I learned? | 见 `findings.md` |
-| What have I done? | 已完成需求、环境梳理、设计、实施计划和 Git 基线 |
-
+| What have I done? | 已完成需求、设计、Git 基线、项目骨架、人脸库和纯算法核心 |

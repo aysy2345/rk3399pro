@@ -24,6 +24,10 @@
 - 新成员登记不需要重新训练模型，只需要采集多张人脸并生成平均特征模板。
 - 仓库原始目录约 9.9 GB，已通过 `.gitignore` 排除 ISO、IMG、EXE、大型压缩包、数据集和 CodeGraph 索引。
 - GitHub 仓库为 `https://github.com/aysy2345/rk3399pro`，当前 `main` 基线提交为 `f695481`。
+- 当前工作站的 `python` 来自 MSYS2，虚拟环境使用 `.venv/bin` 而不是 Windows 常见的 `.venv/Scripts`。
+- 系统同时安装了标准 Windows Python 3.11，可用 `C:\Users\27162\AppData\Local\Programs\Python\Python311\python.exe` 创建本机测试环境并安装预编译 wheel。
+- Phase 3 已形成 22 项单元测试，覆盖配置、成员模型、人脸库原子保存与回滚、匹配、登记聚合、质量检查、多帧稳定和五点对齐。
+- CodeGraph 同步后索引了 18 个新增源码文件和 155 个节点。
 
 ## Technical Decisions
 
@@ -47,6 +51,7 @@
 | `writing-plans` 技能不存在 | 使用已经安装的 planning-with-files 维护根目录计划文件 |
 | 原始资料包含多个 GB 级镜像和安装包 | 使用 `.gitignore` 排除，不放入普通 Git 历史 |
 | RetinaFace 的 RKNN 1.7.1 算子兼容性尚未验证 | 保持检测器接口可替换，并将转换验证设为独立阶段 |
+| 工作站默认 MSYS2 Python 不适合直接安装 PyPI Windows wheel | 使用标准 Windows Python 3.11 的 `.test-venv` 运行主机测试 |
 
 ## Resources
 
@@ -60,4 +65,3 @@
 ## Visual/Browser Findings
 
 - 本轮未使用网页或视觉检查；环境信息来自仓库内 Word 和 PPT 文本内容。
-

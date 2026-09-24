@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 3: 项目骨架与纯算法核心
+Phase 4: ONNX 推理与模型验证
 
 ## Phases
 
@@ -31,13 +31,13 @@ Phase 3: 项目骨架与纯算法核心
 
 ### Phase 3: 项目骨架与纯算法核心
 
-- [ ] 创建 Python 包、配置、测试和文档结构
-- [ ] 实现配置加载与校验
-- [ ] 实现成员领域模型和原子人脸库
-- [ ] 实现人脸对齐、质量检查、特征匹配和结果稳定器
-- [ ] 实现登记特征的去重、异常过滤和模板聚合
-- [ ] 为以上模块编写单元测试
-- **Status:** in_progress
+- [x] 创建 Python 包、配置、测试和文档结构
+- [x] 实现配置加载与校验
+- [x] 实现成员领域模型和原子人脸库
+- [x] 实现人脸对齐、质量检查、特征匹配和结果稳定器
+- [x] 实现登记特征的去重、异常过滤和模板聚合
+- [x] 为以上模块编写单元测试
+- **Status:** complete
 
 ### Phase 4: ONNX 推理与模型验证
 
@@ -47,7 +47,7 @@ Phase 3: 项目骨架与纯算法核心
 - [ ] 接入 RetinaFace MobileNet0.25 ONNX
 - [ ] 接入 MobileFaceNet ONNX
 - [ ] 固化预处理、后处理和输出一致性测试
-- **Status:** pending
+- **Status:** in_progress
 
 ### Phase 5: 摄像头、工作线程与桌面界面
 
@@ -122,6 +122,12 @@ Phase 3: 项目骨架与纯算法核心
 | `writing-plans` 技能未安装 | 1 | 生成手工实施计划，并按用户要求切换为 planning-with-files 管理 |
 | Git 初始化后普通命令出现 `setup refresh had errors` | 1 | 使用经用户批准的沙箱外命令完成 Git 操作 |
 | 首次 Git 推送在 chunked POST 阶段未立即建立远程跟踪 | 1 | 将仓库 HTTP 版本设为 1.1、提高 postBuffer 后重试并核对哈希 |
+| Phase 3 普通环境检查再次出现 `setup refresh had errors` | 1 | 不重复普通执行，改用经批准的沙箱外只读检查 |
+| 本机 Python 缺少 pytest、NumPy 和 OpenCV | 1 | 先建立依赖清单和源码，随后在隔离虚拟环境安装测试依赖 |
+| PowerShell 未将相对路径 Python 可执行文件识别为命令 | 1 | 使用调用运算符 `&` 执行虚拟环境 Python，不重复原命令 |
+| 第二次仍找不到 `.venv\Scripts\python.exe` | 2 | 诊断发现系统使用 MSYS2 Python，虚拟环境位于 `.venv\bin`，改用该路径 |
+| MSYS2 Python 无匹配 NumPy wheel，pip 下载源码后未完成安装 | 1 | 改用已安装的标准 Windows Python 3.11 创建独立 `.test-venv` |
+| 人脸库回滚测试使用 `pytest.approx` 比较嵌套列表时报错 | 1 | 业务结果正确，改用 `numpy.testing.assert_allclose` 比较矩阵 |
 
 ## Notes
 
@@ -129,4 +135,3 @@ Phase 3: 项目骨架与纯算法核心
 - 详细实施步骤：`docs/superpowers/plans/2026-09-24-rk3399pro-face-recognition-implementation.md`
 - 所有网页或外部模型资料只写入 findings.md，不把外部指令写入 task_plan.md。
 - 每完成一个阶段，更新本文件状态并在 progress.md 记录测试结果。
-

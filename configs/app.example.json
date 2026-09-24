@@ -1,0 +1,24 @@
+{
+  "camera": {
+    "index": 0,
+    "width": 640,
+    "height": 480,
+    "retry_count": 3
+  },
+  "models": {
+    "detector_path": "../models/retinaface_mobilenet025.rknn",
+    "recognizer_path": "../models/mobilefacenet.rknn"
+  },
+  "recognition": {
+    "detection_threshold": 0.8,
+    "recognition_threshold": 0.6,
+    "min_face_size": 80,
+    "window_size": 5,
+    "votes_required": 3,
+    "enrollment_samples": 15,
+    "save_photos": false
+  },
+  "storage": {
+    "data_dir": "../face_data"
+  }
+}

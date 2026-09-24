@@ -1,0 +1,5 @@
+# Install PyQt5 from the Ubuntu package repository on ARM64.
+numpy==1.16.3
+opencv-python==4.5.4.60
+Pillow==9.2.0
+# Install rknn_toolkit_lite-1.7.1-cp37-cp37m-linux_aarch64.whl separately.
