@@ -66,7 +66,14 @@ def assess_face(
         return FaceQuality(False, "人脸区域无效", face_size, 0.0)
     sharpness = gradient_sharpness(array[top:bottom, left:right])
     if sharpness < min_sharpness:
-        return FaceQuality(False, "画面模糊，请保持稳定", face_size, sharpness)
+        return FaceQuality(
+            False,
+            "画面模糊（清晰度 {:.1f}/{:.1f}），请保持稳定".format(
+                sharpness, min_sharpness
+            ),
+            face_size,
+            sharpness,
+        )
     return FaceQuality(True, "有效样本", face_size, sharpness)
 
 

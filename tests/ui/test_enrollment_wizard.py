@@ -108,6 +108,18 @@ def test_wizard_starts_on_information_page_and_blocks_invalid_input(qtbot):
     assert controller.begin_calls == []
 
 
+def test_capture_feedback_uses_explicit_high_contrast_styles(qtbot):
+    _, _, _, wizard = make_wizard(qtbot)
+
+    assert wizard.pose_label.objectName() == "poseLabel"
+    assert wizard.reason_label.objectName() == "reasonLabel"
+    assert wizard.capture_progress.objectName() == "captureProgress"
+    style = wizard.styleSheet()
+    assert "QLabel#poseLabel" in style
+    assert "QLabel#reasonLabel" in style
+    assert "QProgressBar#captureProgress::chunk" in style
+
+
 def test_wizard_warns_for_same_name_but_starts_capture(qtbot):
     controller, service, session, wizard = make_wizard(qtbot)
     service.same_name_warning = True

@@ -52,6 +52,14 @@ def test_parse_config_resolves_relative_paths(tmp_path):
     assert config.storage.data_dir == (tmp_path / "face_data").resolve()
 
 
+def test_example_config_uses_camera_friendly_sharpness_threshold():
+    project_root = Path(__file__).resolve().parents[2]
+
+    config = load_config(project_root / "configs" / "app.example.json")
+
+    assert config.recognition.min_sharpness == pytest.approx(40.0)
+
+
 @pytest.mark.parametrize("backend", ["fake", "onnx", "rknn"])
 def test_parse_config_accepts_supported_backends(tmp_path, backend):
     data = valid_config()

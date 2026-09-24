@@ -97,7 +97,7 @@ class MainWindow(QMainWindow):
                 border-radius: 10px;
             }
             QLabel#statusLabel { color: #60a5fa; font-size: 17px; font-weight: 700; }
-            QLabel#resultLabel { font-size: 19px; font-weight: 700; }
+            QLabel#resultLabel { color: #f8fafc; font-size: 19px; font-weight: 700; }
             QLabel#memberCountLabel { color: #b6c5d6; font-size: 15px; }
             QLabel#errorLabel {
                 background: #4a1d24; color: #fecaca; padding: 8px;

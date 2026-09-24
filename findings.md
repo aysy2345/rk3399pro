@@ -71,6 +71,9 @@
 - Windows 测试机存在 PyQt5 QApplication 与 ONNX Runtime 1.24.4 的 DLL 初始化顺序冲突；先导入 onnxruntime、再创建 QApplication 后两个 ONNX 会话均可正常加载。
 - 修复后必须连 Bootstrap/PyQt 模块本身也延迟到 onnxruntime 成功导入之后；仅把 QApplication 构造延后仍不足以避免 Windows DLL 冲突。
 - `configs/app.json` 是用户本地运行配置，现加入 Git 忽略规则，避免摄像头编号、路径等本机设置误入仓库。
+- 用户实际登记截图显示检测器能定位单张、尺寸足够的人脸，但原因标签持续为“画面模糊”；截图中登记人脸区域的梯度清晰度估算为 58.3，低于配置门槛 100.0。
+- Windows Qt 截图显示顶层 QDialog/QWidget 的前景色没有稳定传递给嵌套页面标签；姿态、拒绝原因、进度条数字和主界面识别结果回落为黑色，必须给这些控件显式设置高对比度样式。
+- Windows Qt 实际渲染复测确认：姿态提示为白色粗体深蓝底、拒绝原因使用黄色、进度数字为白色且进度块为亮蓝色，主界面识别结果为白色，原截图的低对比度问题已消除。
 
 ## Technical Decisions
 

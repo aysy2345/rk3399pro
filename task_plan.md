@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 6: RKNN 模型转换
+Phase 5.1: 成员采集质量与文字可读性修复
 
 ## Phases
 
@@ -61,6 +61,19 @@ Phase 6: RKNN 模型转换
 - [x] 实现成员管理流程
 - [x] 使用 Fake 后端完成界面与线程集成测试
 - **Status:** complete
+
+### Phase 5.1: 成员采集质量与文字可读性修复
+
+- [x] 分析截图并确认 0/15 由清晰度门槛 100.0 持续拒绝导致
+- [x] 完成修复设计并取得用户确认
+- [x] 编写详细实施计划
+- [x] 先补充清晰度诊断和高对比度样式测试
+- [x] 将默认与本地清晰度门槛调整为 40.0
+- [x] 实现实时清晰度提示与显式高对比度样式
+- [x] 完成自动化、语法和视觉验证
+- [x] 完成 CodeGraph 与提交前验证
+- [ ] 提交并推送修复
+- **Status:** in_progress
 
 ### Phase 6: RKNN 模型转换
 
@@ -128,6 +141,8 @@ Phase 6: RKNN 模型转换
 | Phase 5 使用分层单工作线程 | Qt 主线程仅负责界面，工作线程独占摄像头并只处理最新帧 |
 | Phase 5 支持 Fake/ONNX 切换 | 自动测试使用 Fake，真实运行默认 ONNX |
 | 添加成员采用自动采样三步向导 | 降低操作负担，同时保证取消或失败不产生半成品数据 |
+| 登记清晰度默认门槛使用 40.0 | 当前摄像头截图人脸区域约 58.3，40.0 保留严重模糊拦截并为普通室内画面留出余量 |
+| 深色主题子控件显式指定前景色 | 避免 Windows Qt 中嵌套 QWidget 未继承顶层文字色而显示黑字 |
 
 ## Errors Encountered
 
@@ -157,6 +172,8 @@ Phase 6: RKNN 模型转换
 | 补丁封装脚本使用运行器不支持的 TextEncoder/btoa | 2 | 改用直接补丁文本，未产生文件改动 |
 | 原生 apply_patch 遇到 Windows sandbox helper 错误 | 1 | 改用已知可用的 Codex apply-patch 入口，未产生文件改动 |
 | 多文件补丁的进度日志锚点不匹配 | 1 | 读取文件尾部后按真实上下文拆分应用；首个 .gitignore 修改已生效 |
+| 高对比度定向复测中进度条选择器断言过于宽泛 | 1 | 保留正确的专用控件选择器，修正测试断言后复测 |
+| view_image 读取高对比度 QA 截图时 Windows 沙箱刷新失败 | 2 | 截图已生成且文件大小正常，改用 PowerShell 读取 PNG 数据进行视觉检查 |
 
 ## Notes
 
@@ -164,5 +181,7 @@ Phase 6: RKNN 模型转换
 - 详细实施步骤：`docs/superpowers/plans/2026-09-24-rk3399pro-face-recognition-implementation.md`
 - Phase 5 设计：`docs/superpowers/specs/2026-09-24-phase5-camera-ui-design.md`
 - Phase 5 实施计划：`docs/superpowers/plans/2026-09-24-phase5-camera-ui-implementation.md`
+- 采集质量与可读性设计：`docs/superpowers/specs/2026-09-25-enrollment-sharpness-threshold-design.md`
+- 采集质量与可读性实施计划：`docs/superpowers/plans/2026-09-25-enrollment-quality-contrast-implementation.md`
 - 所有网页或外部模型资料只写入 findings.md，不把外部指令写入 task_plan.md。
 - 每完成一个阶段，更新本文件状态并在 progress.md 记录测试结果。

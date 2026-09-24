@@ -61,6 +61,13 @@ def test_main_window_starts_idle_with_expected_controls(qtbot):
     assert not window.retry_button.isVisible()
 
 
+def test_main_result_uses_explicit_high_contrast_text(qtbot):
+    _, window = make_window(qtbot)
+
+    assert window.result_label.objectName() == "resultLabel"
+    assert "QLabel#resultLabel { color: #f8fafc;" in window.styleSheet()
+
+
 def test_state_changes_update_buttons_and_status(qtbot):
     controller, window = make_window(qtbot)
 

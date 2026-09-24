@@ -94,7 +94,16 @@ class EnrollmentWizard(QDialog):
         self.setStyleSheet(
             """
             QDialog { background: #0b1220; color: #e5edf6; }
+            QLabel { color: #e5edf6; }
             QLabel#stepLabel { color: #60a5fa; font-size: 20px; font-weight: 700; }
+            QLabel#poseLabel {
+                background: #162235; color: #f8fafc; padding: 8px;
+                border-radius: 6px; font-size: 16px; font-weight: 700;
+            }
+            QLabel#reasonLabel {
+                color: #fbbf24; padding: 4px;
+                font-size: 14px; font-weight: 600;
+            }
             QLabel#warningLabel {
                 background: #493716; color: #fde68a; padding: 8px;
                 border-radius: 6px;
@@ -112,6 +121,14 @@ class EnrollmentWizard(QDialog):
                 border-radius: 7px; padding: 8px 18px;
             }
             QPushButton:disabled { background: #1b2737; color: #65758a; }
+            QProgressBar#captureProgress {
+                background: #162235; color: #f8fafc;
+                border: 1px solid #3d5675; border-radius: 5px;
+                text-align: center; min-height: 20px; font-weight: 700;
+            }
+            QProgressBar#captureProgress::chunk {
+                background: #2563eb; border-radius: 4px;
+            }
             """
         )
 
@@ -138,12 +155,15 @@ class EnrollmentWizard(QDialog):
         self.video_widget = VideoWidget(page)
         layout.addWidget(self.video_widget, 1)
         self.pose_label = QLabel("请正视摄像头并保持稳定", page)
+        self.pose_label.setObjectName("poseLabel")
         self.pose_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.pose_label)
         self.reason_label = QLabel("等待有效样本", page)
+        self.reason_label.setObjectName("reasonLabel")
         self.reason_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(self.reason_label)
         self.capture_progress = QProgressBar(page)
+        self.capture_progress.setObjectName("captureProgress")
         self.capture_progress.setRange(0, 15)
         self.capture_progress.setValue(0)
         self.capture_progress.setFormat("%v/%m")

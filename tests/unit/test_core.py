@@ -97,6 +97,16 @@ def test_quality_accepts_sharp_checkerboard():
     assert gradient_sharpness(image) > 100.0
 
 
+def test_quality_rejection_reports_measured_and_required_sharpness():
+    image = np.zeros((100, 100, 3), dtype=np.uint8)
+
+    result = assess_face(image, (10, 10, 90, 90), 1, 40, 40.0)
+
+    assert not result.accepted
+    assert result.sharpness == pytest.approx(0.0)
+    assert "清晰度 0.0/40.0" in result.reason
+
+
 def test_alignment_accepts_five_landmarks_and_returns_expected_size():
     image = np.zeros((112, 112, 3), dtype=np.uint8)
     image[40:80, 40:80] = 255
