@@ -94,7 +94,7 @@ python -m pytest -q
 
     python -m face_recognition_app.main --config configs/app.json --backend fake
 
-Fake 后端不需要模型文件，但仍会打开配置中的 USB 摄像头。默认摄像头不可用时，可覆盖编号：
+Fake 后端不需要模型文件，但仍会打开配置中的 USB 摄像头。它不会检测真实人脸，因此只能检查主界面、预览和线程，不能添加或重新采集成员。默认摄像头不可用时，可覆盖编号：
 
     python -m face_recognition_app.main --config configs/app.json --backend fake --camera-index 1
 

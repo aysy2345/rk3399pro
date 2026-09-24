@@ -241,6 +241,11 @@
   - 实现 BackendFactory、依赖组装、桌面协调器和命令行启动入口。
   - 使用注入的 Fake 摄像头与 Fake 后端跑通待机、识别、登记、刷新、管理和关闭。
   - 更新 README 的主机安装、Fake/ONNX 启动、USB 摄像头检查和常见问题。
+  - 用户实际运行发现 Fake 后端无法采集；诊断确认 Fake 检测器按设计不返回真实人脸。
+  - 进一步发现 Windows 下若先创建 QApplication，再首次导入 ONNX Runtime，会发生 DLL 初始化失败；在 QApplication 前预加载即可正常创建两个 ONNX 后端。
+  - 先新增回归测试，确认预加载函数与 Fake 采集提示在实现前失败。
+  - 生产 Fake 模式现在会明确提示真实采集必须改用 ONNX，成员管理中的重新采集按钮同步禁用。
+  - ONNX 启动现在在创建 QApplication 前预加载 onnxruntime，避免 Windows DLL 初始化顺序冲突。
 - Files created/modified:
   - face_recognition_app/app/bootstrap.py
   - face_recognition_app/main.py
@@ -309,6 +314,12 @@
 | Phase 5 Task 8 CLI 检查 | python -m face_recognition_app.main --help | 参数完整可解析 | config、backend、camera-index 均正常 | 通过 |
 | Phase 5 Task 8 README 链接 | README 本地相对链接 | 全部目标存在 | 无缺失链接 | 通过 |
 | Phase 5 Task 8 CodeGraph 同步 | 启动层、入口与集成测试 | 索引无待处理变化 | 57 个文件、760 个节点，索引最新 | 通过 |
+| Fake 采集与 ONNX 预加载 TDD 红灯 | 新增回归测试 | 修复前失败 | preload 函数不存在，符合预期 | 通过 |
+| Fake 采集提示首轮回归 | 提示内容断言 | 应明确包含 ONNX | 统一为“ONNX 后端（--backend onnx）” | 通过 |
+| Fake 采集与 ONNX 预加载定向回归 | 后端、入口与 Fake 集成测试 | 全部通过 | 11 项通过，耗时 0.37 秒 | 通过 |
+| Windows ONNX/PyQt5 实际加载 | 先预加载 ONNX Runtime，再创建 QApplication 与两个模型会话 | 两个后端均可创建 | OnnxRetinaFaceDetector 与 OnnxMobileFaceNetEmbedder 加载成功 | 通过 |
+| 采集问题修复完整回归 | 全部离屏测试 | 全部通过 | 96 项通过，耗时 1.09 秒 | 通过 |
+| 采集问题修复语法编译 | face_recognition_app 和 tests | 无语法错误 | compileall 退出码 0 | 通过 |
 
 ## Error Log
 
@@ -339,6 +350,14 @@
 | 2026-09-25 | Task 7 首次 GitHub 推送因自动审批额度到期未执行 | 1 | 未绕过审批；额度恢复后继续执行原推送并核对哈希 |
 | 2026-09-25 | Task 8 首次读取时假定 ONNX 检测器和识别器分属两个文件 | 1 | 使用 rg 定位到统一的 inference/onnx_backend.py，并读取真实构造接口 |
 | 2026-09-25 | Task 8 README 长补丁包含未转义的 Markdown 代码围栏，导致 JavaScript 解析失败 | 1 | 改用缩进代码块并拆除反引号后重新应用，未产生文件改动 |
+| 2026-09-25 | Fake 模式登记始终为 0/15 | 1 | 确认 Fake 检测器不处理真实人脸；改为启动时明确提示使用 ONNX 后端 |
+| 2026-09-25 | QApplication 初始化后首次加载 ONNX Runtime 出现 DLL 初始化失败 | 1 | 验证在创建 QApplication 前预加载 onnxruntime 可正常创建 RetinaFace 与 MobileFaceNet 会话 |
+| 2026-09-25 | Fake 采集提示测试因 ONNX 大小写不一致失败 | 1 | 统一用户提示为“ONNX 后端（--backend onnx）”后复测 |
+| 2026-09-25 | 仅在 QApplication 前预加载仍出现 ONNX Runtime DLL 初始化失败 | 2 | 定位到 main.py 顶层已导入 PyQt/Bootstrap；改为 ONNX 成功预加载后再延迟导入全部桌面组件 |
+| 2026-09-25 | 修复验证结果补丁遗漏跨文件 Update File 标记 | 1 | 根据 rg 定位后拆分为正确的多文件补丁，未产生文件改动 |
+| 2026-09-25 | 补丁封装脚本使用运行器不支持的 TextEncoder/btoa | 2 | 改用直接补丁文本，未产生文件改动 |
+| 2026-09-25 | 原生 apply_patch 遇到 Windows sandbox helper 错误 | 1 | 改用已知可用的 Codex apply-patch 入口，未产生文件改动 |
+| 2026-09-25 | 多文件补丁的进度日志锚点不匹配 | 1 | 读取文件尾部后按真实上下文拆分应用；首个 .gitignore 修改已生效 |
 
 ## 5-Question Reboot Check
 

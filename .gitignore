@@ -35,6 +35,7 @@ env/
 *.temp
 
 # Face-recognition runtime data and model binaries
+configs/app.json
 face_data/
 models/*.onnx
 models/*.rknn

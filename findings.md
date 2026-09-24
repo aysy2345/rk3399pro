@@ -67,6 +67,10 @@
 - Fake 后端现有类要求预设检测批次和至少一个特征向量；启动层的 Fake 演示需要提供确定性的空检测器与固定 512 维特征，完整人脸流程则由集成测试注入自定义后端和摄像头。
 - Task 8 完整回归增至 93 项，Fake 端到端测试使用真实 QThread 但注入重复帧摄像头，不访问物理设备；测试完成后线程正常退出且摄像头释放。
 - CLI 支持 config、backend 和 camera-index 三个覆盖项；程序默认待机，只有用户开始识别或进入登记时才打开摄像头。
+- Fake 后端不会检测摄像头中的真实人脸，因此不能用于真实成员采集；生产 Fake 模式应在进入登记前明确提示改用 ONNX，而测试仍可通过注入登记会话验证完整 UI 流程。
+- Windows 测试机存在 PyQt5 QApplication 与 ONNX Runtime 1.24.4 的 DLL 初始化顺序冲突；先导入 onnxruntime、再创建 QApplication 后两个 ONNX 会话均可正常加载。
+- 修复后必须连 Bootstrap/PyQt 模块本身也延迟到 onnxruntime 成功导入之后；仅把 QApplication 构造延后仍不足以避免 Windows DLL 冲突。
+- `configs/app.json` 是用户本地运行配置，现加入 Git 忽略规则，避免摄像头编号、路径等本机设置误入仓库。
 
 ## Technical Decisions
 

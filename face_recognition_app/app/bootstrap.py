@@ -6,6 +6,7 @@ from dataclasses import dataclass, replace
 from typing import Any, Callable, Optional
 
 import numpy as np
+from PyQt5.QtWidgets import QMessageBox
 
 from face_recognition_app.app.config import (
     AppConfig,
@@ -106,11 +107,13 @@ class DesktopCoordinator:
         controller: AppController,
         member_service: MemberService,
         enrollment_session_factory: Callable[[], Any],
+        enrollment_enabled: bool = True,
     ) -> None:
         self.window = window
         self._controller = controller
         self._member_service = member_service
         self._enrollment_session_factory = enrollment_session_factory
+        self._enrollment_enabled = enrollment_enabled
         self._active_dialog = None
         window.add_member_requested.connect(self.open_enrollment_wizard)
         window.manage_members_requested.connect(self.open_member_manager_dialog)
@@ -121,6 +124,10 @@ class DesktopCoordinator:
     def create_enrollment_wizard(
         self, member: Optional[Any] = None, parent: Optional[Any] = None
     ) -> EnrollmentWizard:
+        if not self._enrollment_enabled:
+            raise BootstrapError(
+                "Fake 后端不检测真实人脸，成员采集请使用 ONNX 后端"
+            )
         wizard = EnrollmentWizard(
             self._controller,
             self._member_service,
@@ -132,6 +139,14 @@ class DesktopCoordinator:
         return wizard
 
     def open_enrollment_wizard(self) -> None:
+        if not self._enrollment_enabled:
+            QMessageBox.warning(
+                self.window,
+                "当前模式不能采集",
+                "Fake 后端不检测真实人脸，无法采集成员。"
+                "请关闭程序后使用 ONNX 后端（--backend onnx）重新启动。",
+            )
+            return
         wizard = self.create_enrollment_wizard()
         self._active_dialog = wizard
         try:
@@ -147,7 +162,7 @@ class DesktopCoordinator:
 
         dialog = MemberManagerDialog(
             self._member_service,
-            reenrollment_factory,
+            reenrollment_factory if self._enrollment_enabled else None,
             parent or self.window,
         )
         dialog.members_changed.connect(self._update_member_count)
@@ -216,6 +231,7 @@ def build_application(
     controller = AppController(worker_host)
     member_service = MemberService(store, controller.refresh_store)
 
+    custom_enrollment_factory = enrollment_session_factory is not None
     if enrollment_session_factory is None:
         recognition = config.recognition
 
@@ -235,6 +251,9 @@ def build_application(
         controller,
         member_service,
         enrollment_session_factory,
+        enrollment_enabled=(
+            config.runtime.backend != "fake" or custom_enrollment_factory
+        ),
     )
     return ApplicationBundle(
         config=config,

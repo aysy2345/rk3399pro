@@ -6,6 +6,7 @@ from face_recognition_app.app.bootstrap import (
     BackendFactory,
     BootstrapError,
     apply_overrides,
+    build_application,
 )
 from face_recognition_app.app.config import ConfigError, parse_config
 from face_recognition_app.inference.fake import FakeFaceDetector, FakeFaceEmbedder
@@ -80,3 +81,23 @@ def test_apply_overrides_rejects_invalid_camera_index(tmp_path, camera_index):
 
     with pytest.raises(BootstrapError, match="camera index"):
         apply_overrides(config, camera_index=camera_index)
+
+
+def test_default_fake_runtime_explains_that_real_enrollment_needs_onnx(
+    qtbot, tmp_path, monkeypatch
+):
+    config = parse_config(config_data(), tmp_path)
+    bundle = build_application(config, camera_factory=lambda: object())
+    qtbot.addWidget(bundle.window)
+    messages = []
+    monkeypatch.setattr(
+        "face_recognition_app.app.bootstrap.QMessageBox.warning",
+        lambda parent, title, message: messages.append((title, message)),
+    )
+
+    bundle.coordinator.open_enrollment_wizard()
+
+    assert messages
+    assert "Fake" in messages[0][1]
+    assert "ONNX" in messages[0][1]
+    bundle.window.close()

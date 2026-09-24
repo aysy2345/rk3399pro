@@ -153,6 +153,10 @@ Phase 6: RKNN 模型转换
 | Task 7 首次 GitHub 推送因自动审批额度到期未执行 | 1 | 未绕过审批；额度恢复后继续执行原推送并核对哈希 |
 | Task 8 首次读取时假定 ONNX 检测器和识别器分属两个文件 | 1 | 使用 rg 定位到统一的 inference/onnx_backend.py，并读取真实构造接口 |
 | Task 8 README 长补丁包含未转义的 Markdown 代码围栏，导致 JavaScript 解析失败 | 1 | 改用缩进代码块并拆除反引号后重新应用，未产生文件改动 |
+| 修复验证结果补丁遗漏跨文件 Update File 标记 | 1 | 根据 rg 定位后拆分为正确的多文件补丁，未产生文件改动 |
+| 补丁封装脚本使用运行器不支持的 TextEncoder/btoa | 2 | 改用直接补丁文本，未产生文件改动 |
+| 原生 apply_patch 遇到 Windows sandbox helper 错误 | 1 | 改用已知可用的 Codex apply-patch 入口，未产生文件改动 |
+| 多文件补丁的进度日志锚点不匹配 | 1 | 读取文件尾部后按真实上下文拆分应用；首个 .gitignore 修改已生效 |
 
 ## Notes
 
