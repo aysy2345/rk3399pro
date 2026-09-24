@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 5.2: 登记状态残留修复
+Phase 6: RKNN 模型转换
 
 ## Phases
 
@@ -84,8 +84,8 @@ Phase 5.2: 登记状态残留修复
 - [x] 编写失败回归测试
 - [x] 实现控制器统一清理登记状态
 - [x] 完成定向、完整、语法和 CodeGraph 验证
-- [ ] 提交并推送修复
-- **Status:** in_progress
+- [x] 提交并推送修复
+- **Status:** complete
 
 ### Phase 6: RKNN 模型转换
 

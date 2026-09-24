@@ -357,7 +357,7 @@
 
 ### Phase 5.2：登记状态残留修复
 
-- **Status:** in_progress
+- **Status:** complete
 - Actions taken:
   - 完成根因设计、自检和用户确认。
   - 创建测试驱动实施计划，限定为 AppController 的最小状态清理。
@@ -368,6 +368,7 @@
   - controller、worker、Fake UI 共 11 项定向测试通过，耗时 0.40 秒。
   - 完整测试 100 项通过，耗时 1.17 秒；compileall 和 git diff --check 通过。
   - CodeGraph 同步完成：57 个 Python 文件、771 个节点、1561 条边，索引最新。
+  - 修复提交 `28c7643` 已推送到 GitHub main，本地与远程哈希一致。
 
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
