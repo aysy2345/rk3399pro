@@ -28,6 +28,22 @@
 - 系统同时安装了标准 Windows Python 3.11，可用 `C:\Users\27162\AppData\Local\Programs\Python\Python311\python.exe` 创建本机测试环境并安装预编译 wheel。
 - Phase 3 已形成 22 项单元测试，覆盖配置、成员模型、人脸库原子保存与回滚、匹配、登记聚合、质量检查、多帧稳定和五点对齐。
 - CodeGraph 同步后索引了 18 个新增源码文件和 155 个节点。
+- `biubug6/Pytorch_Retinaface` 是 MIT 许可，仓库自带 `convert_to_onnx.py`，适合作为 RetinaFace MobileNet0.25 的结构与 ONNX 导出基线；预训练权重仍需单独核验下载来源和授权。
+- `Xiaoccer/MobileFaceNet_Pytorch` 未声明 GitHub 可识别的许可证，不能直接作为可再分发模型来源。
+- `TreB1eN/InsightFace_Pytorch` 使用 MIT 许可，但当前仓库树中没有现成 MobileFaceNet ONNX 文件，需要继续核验其网络结构、权重来源及导出方式。
+- `rockchip-linux/rknn-toolkit` 使用 BSD-3-Clause，官方仓库包含 RKNN Toolkit/Toolkit Lite 1.7.5 文档及 ONNX 转换示例，可作为 RK3399Pro 转换和部署的主依据，但未发现官方 RetinaFace/MobileFaceNet 示例。
+- `rockchip-linux/rknn_model_zoo` 当前 GitHub API 返回 404，不能据此作为 RK3399Pro 的官方模型来源。
+- RetinaFace 候选实现的推理约定已核实：输入为 BGR `NCHW` float32，逐通道减 `(104,117,123)`；MobileNet0.25 配置采用三层特征步长 `8/16/32`、每层两个 anchor、variance `(0.1,0.2)`，输出为位置、二分类置信度和五点关键点，需要在主机端解码与 NMS。
+- `biubug6/Pytorch_Retinaface` 的现有 ONNX 导出脚本把三个网络输出错误地只命名为一个 `output0`，接入时应改为显式的 `loc/conf/landms` 三输出导出或按输出形状映射。
+- `wujiyang/Face_Pytorch` 和 `yeyupiaoling/Pytorch-MobileFaceNet` 均为 Apache-2.0；后者在仓库内直接提供 MobileFaceNet `.pth` 权重，当前是更容易复现的识别模型候选，但仍要检查权重的数据来源说明和导出后的数值一致性。
+- `ZhaoJ9014/face.evoLVe` 为 MIT，但仓库树中没有 MobileFaceNet 预训练权重；`JDAI-CV/FaceX-Zoo` 带 ONNX 转换器但许可证被 GitHub 标记为 `NOASSERTION`，优先级较低。
+- 已固定 `yeyupiaoling/Pytorch-MobileFaceNet` 候选 revision 为 `080aab37323b2736122aa49b6a4b634549714dde`。该版本默认权重是 TorchScript，网络默认输出 512 维；预测代码直接使用 OpenCV BGR 顺序，并执行 `(pixel-127.5)/127.5`，不能套用常见的 RGB、除以 128 或 128 维假设。
+- 已从上述固定 revision 下载 `save_model/mobilefacenet.pth`，文件大小 5,051,471 字节，SHA-256 为 `330787c19d95745f7c882c2883a30e0ca75661952953680bffc95405084f9064`；归档内容确认是 TorchScript，而非普通 state_dict。
+- 使用 PyTorch 2.11.0 将该 TorchScript 导出为 ONNX opset 11，ONNX SHA-256 为 `be53e4bc6a2af3bef44254ef4f3ef9bd4d9f55ce25abc01359816c68eb25de8a`。固定随机输入下，ONNX Runtime 对 TorchScript 的最大绝对误差为 `1.6298145055770874e-08`，余弦相似度为 `0.9999999999974729`。
+- `foamliu/MobileFaceNet-PyTorch` 当前 HEAD 固定为 `2c720d6875488e94f4d4eb870936cb05613b74d5`，仓库顶层许可证为 Apache-2.0，且仓库树检索曾显示包含 `retinaface/weights/mobilenet0.25_Final.pth`；其 RetinaFace 子目录没有独立 README，因此仍需核对代码与权重是否完整继承自 `biubug6/Pytorch_Retinaface`。
+- 已浅克隆并检查该固定 commit：RetinaFace 权重大小 1,789,735 字节，SHA-256 为 `2979b33ffafda5d74b6948cd7a5b9a7a62f62b949cef24e95fd15d2883a65220`。网络输出确为 `loc/conf/landmarks` 三张量，测试阶段对分类输出执行 softmax；预处理与 anchor 配置和当前 ONNX 适配器一致。
+- 候选源码的 `cfg_mnet.pretrain=True` 会在构造网络时额外读取一个未随子目录提供的 ImageNet backbone 权重。导出时应复制配置并改为 `pretrain=False`，再加载完整的 `mobilenet0.25_Final.pth`，避免无关文件依赖。
+- RetinaFace 已使用 PyTorch 2.11.0、torchvision 0.26.0 导出为 ONNX opset 11，ONNX SHA-256 为 `34274686d588a0c0936ad2b851513c5a0d97cd69a3244129525d405509bed0b3`。边框、分数、关键点相对 PyTorch 的最大绝对误差分别为 `1.0550e-05`、`1.1921e-07`、`1.6492e-05`，三者余弦相似度均高于 `0.999999999998`。
 
 ## Technical Decisions
 
@@ -52,6 +68,9 @@
 | 原始资料包含多个 GB 级镜像和安装包 | 使用 `.gitignore` 排除，不放入普通 Git 历史 |
 | RetinaFace 的 RKNN 1.7.1 算子兼容性尚未验证 | 保持检测器接口可替换，并将转换验证设为独立阶段 |
 | 工作站默认 MSYS2 Python 不适合直接安装 PyPI Windows wheel | 使用标准 Windows Python 3.11 的 `.test-venv` 运行主机测试 |
+| GitHub 搜索首次返回 `unexpected EOF` | 改用 GitHub API 直接检查候选仓库元数据和文件树 |
+| 固定 revision 的 GitHub Contents API 一次连接超时 | 改用 raw.githubusercontent.com 固定 commit 地址下载，并在本地计算 SHA-256 |
+| `foamliu/MobileFaceNet-PyTorch` 的 `retinaface/README.md` 返回 404 | 不假定存在子目录说明，改为逐项核对源码文件与权重 |
 
 ## Resources
 
@@ -61,6 +80,11 @@
 - `边缘人工智能应用开发(IPC Camera 口罩识别)/03 第三模块：嵌入式设备实现目标检测/02 目标检测模型的转化/`
 - `边缘人工智能应用开发(IPC Camera 口罩识别)/03 第三模块：嵌入式设备实现目标检测/03 嵌入式开发板环境配置/`
 - `边缘人工智能应用开发(USB Camera 水果识别)/01 第一模块：目标检测的准备/05 摄像头采集图片/`
+- https://github.com/biubug6/Pytorch_Retinaface
+- https://github.com/TreB1eN/InsightFace_Pytorch
+- https://github.com/rockchip-linux/rknn-toolkit
+- https://github.com/wujiyang/Face_Pytorch
+- https://github.com/yeyupiaoling/Pytorch-MobileFaceNet
 
 ## Visual/Browser Findings
 

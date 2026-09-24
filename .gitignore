@@ -40,4 +40,5 @@ models/*.onnx
 models/*.rknn
 models/*.pth
 models/*.pt
+models/.sources/
 test-output/

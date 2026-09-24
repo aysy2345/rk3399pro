@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "models": [
+    {
+      "id": "retinaface_mobilenet025",
+      "status": "onnx-exported-and-verified",
+      "source_repository": "https://github.com/foamliu/MobileFaceNet-PyTorch",
+      "upstream_repository": "https://github.com/biubug6/Pytorch_Retinaface",
+      "source_revision": "2c720d6875488e94f4d4eb870936cb05613b74d5",
+      "source_mirror": "https://github.com/foamliu/MobileFaceNet-PyTorch/tree/2c720d6875488e94f4d4eb870936cb05613b74d5/retinaface",
+      "source_weights": "mobilenet0.25_Final.pth",
+      "source_weights_sha256": "2979b33ffafda5d74b6948cd7a5b9a7a62f62b949cef24e95fd15d2883a65220",
+      "license": "Apache-2.0 mirror repository; upstream RetinaFace code MIT",
+      "onnx_file": "retinaface_mobilenet025.onnx",
+      "sha256": "34274686d588a0c0936ad2b851513c5a0d97cd69a3244129525d405509bed0b3",
+      "export": {
+        "torch": "2.11.0",
+        "torchvision": "0.26.0",
+        "onnx": "1.20.1",
+        "onnxruntime": "1.24.4",
+        "opset": 11,
+        "max_absolute_error": {
+          "boxes": 1.055002212524414e-05,
+          "scores": 1.1920928955078125e-07,
+          "landmarks": 1.6491860151290894e-05
+        }
+      },
+      "input": {
+        "name": "input",
+        "shape": [1, 3, 640, 640],
+        "color": "BGR",
+        "dtype": "float32",
+        "normalization": "subtract [104, 117, 123]"
+      },
+      "outputs": [
+        {"semantic": "boxes", "shape": [1, 16800, 4]},
+        {"semantic": "scores", "shape": [1, 16800, 2]},
+        {"semantic": "landmarks", "shape": [1, 16800, 10]}
+      ]
+    },
+    {
+      "id": "mobilefacenet",
+      "status": "onnx-exported-and-verified",
+      "source_repository": "https://github.com/yeyupiaoling/Pytorch-MobileFaceNet",
+      "source_revision": "080aab37323b2736122aa49b6a4b634549714dde",
+      "source_weights": "save_model/mobilefacenet.pth",
+      "source_weights_sha256": "330787c19d95745f7c882c2883a30e0ca75661952953680bffc95405084f9064",
+      "license": "Apache-2.0",
+      "onnx_file": "mobilefacenet.onnx",
+      "sha256": "be53e4bc6a2af3bef44254ef4f3ef9bd4d9f55ce25abc01359816c68eb25de8a",
+      "export": {
+        "torch": "2.11.0",
+        "onnx": "1.20.1",
+        "onnxruntime": "1.24.4",
+        "opset": 11,
+        "max_absolute_error": 1.6298145055770874e-08,
+        "cosine_similarity": 0.9999999999974729
+      },
+      "input": {
+        "name": "input",
+        "shape": [1, 3, 112, 112],
+        "color": "BGR",
+        "dtype": "float32",
+        "normalization": "(pixel - 127.5) / 127.5"
+      },
+      "outputs": [
+        {"semantic": "embedding", "shape": [1, 512]}
+      ]
+    }
+  ]
+}

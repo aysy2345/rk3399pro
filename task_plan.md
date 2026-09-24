@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 4: ONNX 推理与模型验证
+Phase 5: 摄像头、工作线程与桌面界面
 
 ## Phases
 
@@ -41,13 +41,13 @@ Phase 4: ONNX 推理与模型验证
 
 ### Phase 4: ONNX 推理与模型验证
 
-- [ ] 定义检测器和特征提取器接口
-- [ ] 实现 Fake 后端供无模型测试
-- [ ] 记录模型来源、许可证、校验值和输入输出
-- [ ] 接入 RetinaFace MobileNet0.25 ONNX
-- [ ] 接入 MobileFaceNet ONNX
-- [ ] 固化预处理、后处理和输出一致性测试
-- **Status:** in_progress
+- [x] 定义检测器和特征提取器接口
+- [x] 实现 Fake 后端供无模型测试
+- [x] 记录模型来源、许可证、校验值和输入输出
+- [x] 接入 RetinaFace MobileNet0.25 ONNX
+- [x] 接入 MobileFaceNet ONNX（真实权重已导出并通过 TorchScript/ONNX 一致性验证）
+- [x] 固化预处理、后处理和输出一致性测试
+- **Status:** complete
 
 ### Phase 5: 摄像头、工作线程与桌面界面
 
@@ -128,6 +128,9 @@ Phase 4: ONNX 推理与模型验证
 | 第二次仍找不到 `.venv\Scripts\python.exe` | 2 | 诊断发现系统使用 MSYS2 Python，虚拟环境位于 `.venv\bin`，改用该路径 |
 | MSYS2 Python 无匹配 NumPy wheel，pip 下载源码后未完成安装 | 1 | 改用已安装的标准 Windows Python 3.11 创建独立 `.test-venv` |
 | 人脸库回滚测试使用 `pytest.approx` 比较嵌套列表时报错 | 1 | 业务结果正确，改用 `numpy.testing.assert_allclose` 比较矩阵 |
+| GitHub 仓库搜索返回 `unexpected EOF` | 1 | 改用 GitHub API 直接读取候选仓库元数据和文件树 |
+| apply_patch 包装脚本缺少浏览器式 Base64 API | 2 | 使用纯 JavaScript UTF-8 与 Base64 编码函数调用 apply_patch 模式 |
+| GitHub Contents API 查询固定权重时连接超时 | 1 | 改用固定 commit 的 raw 地址下载并本地计算 SHA-256 |
 
 ## Notes
 
