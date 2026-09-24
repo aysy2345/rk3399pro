@@ -51,6 +51,8 @@
 - 当前测试依赖没有 PyQt5 或 pytest-qt；Phase 5 的离屏 Qt 测试需要补充主机测试依赖，同时继续通过 Fake Camera 和 Fake 推理隔离真实硬件。
 - Windows Python 3.11 测试虚拟环境已成功安装 PyQt5 5.15.7 与 pytest-qt 4.4.0，`pip check` 无冲突；加入新配置测试后完整测试为 37 项。
 - OpenCVCamera 通过 capture_factory 注入后可完整测试打开重试、属性设置、读取错误和释放，不需要在 CI 或开发机测试中占用真实摄像头；Task 2 后完整测试为 42 项。
+- IoU 轻量轨迹足以为当前连续帧投票提供短时 track_id，无需在 Phase 5 引入复杂跟踪器；识别与登记流水线保持纯 Python 后，Qt 工作线程可以只承担摄像头循环和信号转发。
+- 自动登记默认姿态配额由目标样本数生成：正视占余数和约一半样本，左转与右转各约四分之一；关键点姿态、质量、时间间隔和特征相似度均通过后才计数。
 
 ## Technical Decisions
 

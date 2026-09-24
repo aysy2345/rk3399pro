@@ -68,3 +68,21 @@ def assess_face(
     if sharpness < min_sharpness:
         return FaceQuality(False, "画面模糊，请保持稳定", face_size, sharpness)
     return FaceQuality(True, "有效样本", face_size, sharpness)
+
+
+def classify_pose(landmarks: np.ndarray, yaw_threshold: float = 0.12) -> str:
+    points = np.asarray(landmarks, dtype=np.float32)
+    if points.shape != (5, 2) or not np.all(np.isfinite(points)):
+        raise ValueError("landmarks must have shape 5x2 and finite values")
+    if yaw_threshold <= 0.0:
+        raise ValueError("yaw_threshold must be positive")
+    eye_distance = float(abs(points[1, 0] - points[0, 0]))
+    if eye_distance <= 1e-6:
+        raise ValueError("eye landmarks must be separated")
+    eye_center_x = float((points[0, 0] + points[1, 0]) * 0.5)
+    offset = float(points[2, 0] - eye_center_x) / eye_distance
+    if offset < -yaw_threshold:
+        return "left"
+    if offset > yaw_threshold:
+        return "right"
+    return "front"

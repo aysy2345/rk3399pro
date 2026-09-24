@@ -143,6 +143,25 @@
   - `face_recognition_app/hardware/camera.py`
   - `tests/unit/test_camera.py`
 
+### Phase 5 Task 3：识别与登记流水线
+
+- **Status:** complete
+- Actions taken:
+  - 定义 AppState、FaceOverlay、FrameResult 和 WorkerErrorInfo 运行值对象。
+  - 实现基于检测框 IoU 的轻量短时人脸轨迹，不增加外部跟踪依赖。
+  - 串联检测、五点对齐、特征提取、余弦匹配和连续帧稳定。
+  - 使用五点关键点的归一化鼻尖偏移实现 front/left/right 粗粒度姿态分类。
+  - 实现自动登记会话的姿态计划、质量门槛、采样间隔、重复样本过滤和模板聚合。
+- Files created/modified:
+  - `face_recognition_app/domain/runtime.py`
+  - `face_recognition_app/core/tracking.py`
+  - `face_recognition_app/core/pipeline.py`
+  - `face_recognition_app/core/enrollment_session.py`
+  - `face_recognition_app/core/quality.py`
+  - `tests/unit/test_tracking.py`
+  - `tests/unit/test_pipeline.py`
+  - `tests/unit/test_enrollment_session.py`
+
 | Test | Input | Expected | Actual | Status |
 |------|-------|----------|--------|--------|
 | Git 本地与远程哈希核对 | `HEAD` 与 `origin/main` | 两者一致 | 均为 `f6954817c371381e4cbd078d488c7f8f8dad07d5` | 通过 |
@@ -171,6 +190,9 @@
 | Phase 5 Task 2 TDD 红灯 | 摄像头测试 | 实现前导入失败 | Camera 模块不存在，符合预期 | 通过 |
 | Phase 5 摄像头测试 | `tests/unit/test_camera.py` | 全部通过 | 5 项通过，耗时 0.17 秒 | 通过 |
 | Phase 5 Task 2 完整回归 | 全部测试 | 全部通过 | 42 项通过，耗时 0.60 秒 | 通过 |
+| Phase 5 Task 3 TDD 红灯 | 三个新测试文件 | 实现前导入失败 | tracking、pipeline、enrollment_session 均不存在，符合预期 | 通过 |
+| Phase 5 识别与登记流水线 | Task 3 定向测试 | 全部通过 | 7 项通过，耗时 0.25 秒 | 通过 |
+| Phase 5 Task 3 完整回归 | 全部测试 | 全部通过 | 49 项通过，耗时 0.58 秒 | 通过 |
 
 ## Error Log
 
