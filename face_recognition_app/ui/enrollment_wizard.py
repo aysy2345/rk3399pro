@@ -38,6 +38,7 @@ class EnrollmentWizard(QDialog):
         session_factory: Callable[[], Any],
         parent: Optional[QWidget] = None,
         member: Optional[Member] = None,
+        preview_flip_horizontal: bool = False,
     ) -> None:
         super().__init__(parent)
         self._controller = controller
@@ -49,6 +50,7 @@ class EnrollmentWizard(QDialog):
         self._enrollment_active = False
         self._saving = False
         self._existing_member = member
+        self._preview_flip_horizontal = preview_flip_horizontal
         self.setWindowTitle(
             "重新采集成员" if member is not None else "添加新成员"
         )
@@ -152,7 +154,9 @@ class EnrollmentWizard(QDialog):
     def _build_capture_page(self) -> QWidget:
         page = QWidget(self)
         layout = QVBoxLayout(page)
-        self.video_widget = VideoWidget(page)
+        self.video_widget = VideoWidget(
+            page, flip_horizontal=self._preview_flip_horizontal
+        )
         layout.addWidget(self.video_widget, 1)
         self.pose_label = QLabel("请正视摄像头并保持稳定", page)
         self.pose_label.setObjectName("poseLabel")

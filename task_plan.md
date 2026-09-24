@@ -6,7 +6,7 @@
 
 ## Current Phase
 
-Phase 6: RKNN 模型转换
+Phase 5.3: 摄像头预览水平翻转
 
 ## Phases
 
@@ -87,6 +87,18 @@ Phase 6: RKNN 模型转换
 - [x] 提交并推送修复
 - **Status:** complete
 
+### Phase 5.3: 摄像头预览水平翻转
+
+- [x] 确认只翻转显示层，不修改推理帧
+- [x] 完成设计并取得用户确认
+- [x] 编写详细实施计划
+- [x] 添加配置与 VideoWidget 失败测试
+- [x] 实现配置化图像翻转和叠加框坐标映射
+- [x] 将配置接入主窗口与登记向导
+- [x] 完成自动化、语法、视觉和 CodeGraph 验证
+- [ ] 提交并推送修复
+- **Status:** in_progress
+
 ### Phase 6: RKNN 模型转换
 
 - [ ] 在 Ubuntu 18.04 x86_64 配置 RKNN Toolkit 1.7.1
@@ -157,6 +169,8 @@ Phase 6: RKNN 模型转换
 | 深色主题子控件显式指定前景色 | 避免 Windows Qt 中嵌套 QWidget 未继承顶层文字色而显示黑字 |
 | 登记退出由控制器显式清理宿主会话 | start/stop 保持通用语义，登记生命周期在 AppController 中闭合 |
 | 线程完成回调携带明确 QThread 代际 | 防止旧线程的延迟 finished 信号清空刚启动的新线程引用 |
+| 预览翻转只发生在 VideoWidget | 模型、登记和识别继续使用摄像头原始帧，避免改变特征口径 |
+| preview_flip_horizontal 缺省 false | 旧配置保持现有行为，当前本地与示例配置显式设为 true |
 
 ## Errors Encountered
 
@@ -191,6 +205,7 @@ Phase 6: RKNN 模型转换
 | 识别诊断命令可能完整输出 members.json 中的人脸特征 | 1 | 安全机制拒绝且未读取数据；改为仅统计成员数量、矩阵形状和向量范数 |
 | 两项 TDD 红灯测试合并执行时仅输出 F，集成测试未给出摘要 | 1 | 分开以 verbose 模式运行，确认控制器未清理状态且集成流程无法收到识别结果 |
 | 修复登记残留后 Fake UI 立即重启触发 Qt 进程退出码 -1073740791 | 2 | sender() 未可靠标识旧线程；改为连接 finished 时通过闭包显式传递对应 QThread |
+| 预览翻转叠加框测试统计绿色像素但测试人脸为陌生人橙色框 | 1 | 将测试数据改为已识别人脸绿色框，保持坐标断言目标不变 |
 
 ## Notes
 
@@ -202,5 +217,7 @@ Phase 6: RKNN 模型转换
 - 采集质量与可读性实施计划：`docs/superpowers/plans/2026-09-25-enrollment-quality-contrast-implementation.md`
 - 登记状态清理设计：`docs/superpowers/specs/2026-09-25-enrollment-state-cleanup-design.md`
 - 登记状态清理实施计划：`docs/superpowers/plans/2026-09-25-enrollment-state-cleanup-implementation.md`
+- 预览水平翻转设计：`docs/superpowers/specs/2026-09-25-preview-horizontal-flip-design.md`
+- 预览水平翻转实施计划：`docs/superpowers/plans/2026-09-25-preview-horizontal-flip-implementation.md`
 - 所有网页或外部模型资料只写入 findings.md，不把外部指令写入 task_plan.md。
 - 每完成一个阶段，更新本文件状态并在 progress.md 记录测试结果。

@@ -22,9 +22,16 @@ class MainWindow(QMainWindow):
     add_member_requested = pyqtSignal()
     manage_members_requested = pyqtSignal()
 
-    def __init__(self, controller, member_count: int = 0, parent=None) -> None:
+    def __init__(
+        self,
+        controller,
+        member_count: int = 0,
+        parent=None,
+        preview_flip_horizontal: bool = False,
+    ) -> None:
         super().__init__(parent)
         self._controller = controller
+        self._preview_flip_horizontal = preview_flip_horizontal
         self.setWindowTitle("本地人脸识别")
         self.resize(1100, 760)
         self._build_ui(member_count)
@@ -38,7 +45,9 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(20, 18, 20, 18)
         layout.setSpacing(14)
 
-        self.video_widget = VideoWidget(root)
+        self.video_widget = VideoWidget(
+            root, flip_horizontal=self._preview_flip_horizontal
+        )
         layout.addWidget(self.video_widget, 1)
 
         panel = QFrame(root)

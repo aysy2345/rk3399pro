@@ -19,6 +19,7 @@ def valid_config():
             "height": 480,
             "target_fps": 30,
             "retry_count": 3,
+            "preview_flip_horizontal": True,
         },
         "models": {
             "detector_path": "models/detector.rknn",
@@ -46,6 +47,7 @@ def test_parse_config_resolves_relative_paths(tmp_path):
     assert config.runtime.inference_interval_ms == 100
     assert config.camera.width == 640
     assert config.camera.target_fps == 30
+    assert config.camera.preview_flip_horizontal is True
     assert config.recognition.min_sharpness == pytest.approx(100.0)
     assert config.recognition.enrollment_interval_ms == 300
     assert config.models.detector_path == (tmp_path / "models/detector.rknn").resolve()
@@ -58,6 +60,24 @@ def test_example_config_uses_camera_friendly_sharpness_threshold():
     config = load_config(project_root / "configs" / "app.example.json")
 
     assert config.recognition.min_sharpness == pytest.approx(40.0)
+    assert config.camera.preview_flip_horizontal is True
+
+
+def test_camera_preview_flip_defaults_to_false(tmp_path):
+    data = valid_config()
+    data["camera"].pop("preview_flip_horizontal")
+
+    config = parse_config(data, tmp_path)
+
+    assert config.camera.preview_flip_horizontal is False
+
+
+def test_camera_preview_flip_must_be_boolean(tmp_path):
+    data = valid_config()
+    data["camera"]["preview_flip_horizontal"] = 1
+
+    with pytest.raises(ConfigError, match="preview_flip_horizontal"):
+        parse_config(data, tmp_path)
 
 
 @pytest.mark.parametrize("backend", ["fake", "onnx", "rknn"])

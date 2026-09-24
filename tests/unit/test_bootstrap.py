@@ -101,3 +101,22 @@ def test_default_fake_runtime_explains_that_real_enrollment_needs_onnx(
     assert "Fake" in messages[0][1]
     assert "ONNX" in messages[0][1]
     bundle.window.close()
+
+
+def test_preview_flip_config_reaches_main_and_enrollment_windows(qtbot, tmp_path):
+    data = config_data()
+    data["camera"]["preview_flip_horizontal"] = True
+    config = parse_config(data, tmp_path)
+    bundle = build_application(
+        config,
+        camera_factory=lambda: object(),
+        enrollment_session_factory=lambda: object(),
+    )
+    qtbot.addWidget(bundle.window)
+    wizard = bundle.coordinator.create_enrollment_wizard()
+    qtbot.addWidget(wizard)
+
+    assert bundle.window.video_widget.flip_horizontal is True
+    assert wizard.video_widget.flip_horizontal is True
+    wizard.close()
+    bundle.window.close()

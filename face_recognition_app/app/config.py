@@ -25,6 +25,7 @@ class CameraConfig:
     height: int
     target_fps: int
     retry_count: int
+    preview_flip_horizontal: bool
 
 
 @dataclass(frozen=True)
@@ -96,6 +97,14 @@ def _boolean(data: Mapping[str, Any], field: str) -> bool:
     return value
 
 
+def _optional_boolean(
+    data: Mapping[str, Any], field: str, default: bool
+) -> bool:
+    if field not in data:
+        return default
+    return _boolean(data, field)
+
+
 def _choice(
     data: Mapping[str, Any], field: str, choices: tuple
 ) -> str:
@@ -148,6 +157,9 @@ def parse_config(data: Mapping[str, Any], base_dir: Path) -> AppConfig:
         height=_integer(camera_data, "height", 1),
         target_fps=_integer(camera_data, "target_fps", 1),
         retry_count=_integer(camera_data, "retry_count", 0),
+        preview_flip_horizontal=_optional_boolean(
+            camera_data, "preview_flip_horizontal", False
+        ),
     )
     models = ModelConfig(
         detector_path=_path(model_data, "detector_path", base_dir),

@@ -8,7 +8,8 @@
     "width": 640,
     "height": 480,
     "target_fps": 30,
-    "retry_count": 3
+    "retry_count": 3,
+    "preview_flip_horizontal": true
   },
   "models": {
     "detector_path": "../models/retinaface_mobilenet025.onnx",

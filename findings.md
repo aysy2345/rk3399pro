@@ -79,6 +79,8 @@
 - 使用用户第二张截图的摄像头区域执行真实 ONNX 链路：RetinaFace 检测 1 张人脸，置信度 0.996、耗时 0.093 秒；MobileFaceNet 耗时 0.017 秒；与唯一模板相似度 0.9314，高于 0.6 阈值，模型与人脸库均正常。
 - 根因在登记结束控制流：从 IDLE 开始登记时，AppController.cancel_enrollment 只调用 host.stop，没有调用 host.cancel_enrollment，导致 WorkerThreadHost._pending_enrollment 未清空；随后开始识别会把旧登记会话注入新 worker，使界面状态为 RECOGNIZING、实际 worker 模式仍为 enrollment。
 - 清除 pending enrollment 后，立即重启测试又暴露线程代际竞态：旧 QThread 的 queued finished 回调可能在新线程赋值后执行，原 _clear_finished 会无条件清空新线程引用并导致 QThread 运行中被销毁；回调必须比较 signal sender 与当前线程，只清理对应代际。
+- 当前 VideoWidget 原先没有任何水平翻转，因此用户看到的镜像来自笔记本摄像头或驱动；修复应只在显示副本上翻转。
+- Windows Qt 非对称画面视觉检查确认：左红右蓝的原始测试帧显示为左蓝右红，原始左侧人脸框和标签同步移动到右侧，图像与叠加坐标一致。
 
 ## Technical Decisions
 

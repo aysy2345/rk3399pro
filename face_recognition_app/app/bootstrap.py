@@ -108,12 +108,14 @@ class DesktopCoordinator:
         member_service: MemberService,
         enrollment_session_factory: Callable[[], Any],
         enrollment_enabled: bool = True,
+        preview_flip_horizontal: bool = False,
     ) -> None:
         self.window = window
         self._controller = controller
         self._member_service = member_service
         self._enrollment_session_factory = enrollment_session_factory
         self._enrollment_enabled = enrollment_enabled
+        self._preview_flip_horizontal = preview_flip_horizontal
         self._active_dialog = None
         window.add_member_requested.connect(self.open_enrollment_wizard)
         window.manage_members_requested.connect(self.open_member_manager_dialog)
@@ -134,6 +136,7 @@ class DesktopCoordinator:
             self._enrollment_session_factory,
             parent or self.window,
             member=member,
+            preview_flip_horizontal=self._preview_flip_horizontal,
         )
         wizard.member_saved.connect(self._update_member_count)
         return wizard
@@ -245,7 +248,11 @@ def build_application(
                 recognition.enrollment_interval_ms,
             )
 
-    window = MainWindow(controller, member_count=len(snapshot.members))
+    window = MainWindow(
+        controller,
+        member_count=len(snapshot.members),
+        preview_flip_horizontal=config.camera.preview_flip_horizontal,
+    )
     coordinator = DesktopCoordinator(
         window,
         controller,
@@ -254,6 +261,7 @@ def build_application(
         enrollment_enabled=(
             config.runtime.backend != "fake" or custom_enrollment_factory
         ),
+        preview_flip_horizontal=config.camera.preview_flip_horizontal,
     )
     return ApplicationBundle(
         config=config,

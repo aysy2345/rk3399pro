@@ -14,10 +14,11 @@ from face_recognition_app.domain.runtime import FaceOverlay, FrameResult
 
 
 class VideoWidget(QWidget):
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent=None, flip_horizontal: bool = False) -> None:
         super().__init__(parent)
         self.setObjectName("videoWidget")
         self.setMinimumSize(480, 300)
+        self._flip_horizontal = bool(flip_horizontal)
         self._image = QImage()
         self._source_size = QSize()
         self._overlays: Sequence[FaceOverlay] = ()
@@ -30,6 +31,10 @@ class VideoWidget(QWidget):
     def overlay_count(self) -> int:
         return len(self._overlays)
 
+    @property
+    def flip_horizontal(self) -> bool:
+        return self._flip_horizontal
+
     def sizeHint(self) -> QSize:
         return QSize(960, 540)
 
@@ -38,6 +43,8 @@ class VideoWidget(QWidget):
         if frame.ndim != 3 or frame.shape[2] != 3 or frame.size == 0:
             raise ValueError("frame must be a non-empty BGR image")
         rgb = np.ascontiguousarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        if self._flip_horizontal:
+            rgb = np.ascontiguousarray(rgb[:, ::-1])
         height, width = rgb.shape[:2]
         image = QImage(
             rgb.data,
@@ -85,6 +92,9 @@ class VideoWidget(QWidget):
             color = QColor("#22c55e" if face.is_known else "#f59e0b")
             painter.setPen(QPen(color, 3))
             x1, y1, x2, y2 = face.box
+            if self._flip_horizontal:
+                source_width = float(self._source_size.width())
+                x1, x2 = source_width - x2, source_width - x1
             rect = QRectF(
                 origin.x() + x1 * scale_x,
                 origin.y() + y1 * scale_y,

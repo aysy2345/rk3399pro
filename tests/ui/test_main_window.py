@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from PyQt5.QtCore import QObject, Qt, pyqtSignal
 
 from face_recognition_app.domain.runtime import (
@@ -155,3 +156,50 @@ def test_video_widget_renders_bgr_frame_and_overlay(qtbot):
     assert not rendered.isNull()
     assert widget.has_frame
     assert widget.overlay_count == 1
+
+
+def test_video_widget_horizontal_flip_changes_pixels_without_mutating_source(qtbot):
+    widget = VideoWidget(flip_horizontal=True)
+    qtbot.addWidget(widget)
+    frame = np.zeros((2, 4, 3), dtype=np.uint8)
+    frame[:, :2] = (0, 0, 255)
+    frame[:, 2:] = (255, 0, 0)
+    original = frame.copy()
+
+    widget.set_frame(frame)
+
+    assert widget.flip_horizontal is True
+    assert widget._image.pixelColor(0, 0).blue() == 255
+    assert widget._image.pixelColor(3, 0).red() == 255
+    np.testing.assert_array_equal(frame, original)
+
+
+@pytest.mark.parametrize(
+    ("flip_horizontal", "expected_side"),
+    [(False, "left"), (True, "right")],
+)
+def test_video_widget_keeps_overlay_aligned_after_horizontal_flip(
+    qtbot, flip_horizontal, expected_side
+):
+    widget = VideoWidget(flip_horizontal=flip_horizontal)
+    qtbot.addWidget(widget)
+    widget.resize(320, 240)
+    widget.show()
+    image = np.zeros((120, 160, 3), dtype=np.uint8)
+    overlay = FaceOverlay(
+        "face-1", (10.0, 20.0, 50.0, 100.0), "001", "张三", 0.9, True
+    )
+
+    widget.set_result(FrameResult(image, (overlay,)))
+    rendered = widget.grab().toImage()
+    green_counts = {"left": 0, "right": 0}
+    for y in range(rendered.height()):
+        for x in range(rendered.width()):
+            color = rendered.pixelColor(x, y)
+            if color.green() > 120 and color.red() < 120:
+                side = "left" if x < rendered.width() // 2 else "right"
+                green_counts[side] += 1
+
+    assert green_counts[expected_side] > green_counts[
+        "right" if expected_side == "left" else "left"
+    ]
