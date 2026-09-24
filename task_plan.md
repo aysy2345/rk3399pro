@@ -94,6 +94,14 @@ Phase 5: 摄像头、工作线程与桌面界面
 - [ ] 提交并推送最终版本
 - **Status:** pending
 
+### 文档维护：GitHub README 刷新
+
+- [x] 确认方案 B 并完成设计说明
+- [x] 更新根目录 README
+- [x] 验证链接、测试和 Git 差异
+- [x] 提交并推送到 GitHub
+- **Status:** complete
+
 ## Key Questions
 
 1. RetinaFace MobileNet0.25 的具体模型来源和许可证是否适合本项目？
@@ -131,6 +139,8 @@ Phase 5: 摄像头、工作线程与桌面界面
 | GitHub 仓库搜索返回 `unexpected EOF` | 1 | 改用 GitHub API 直接读取候选仓库元数据和文件树 |
 | apply_patch 包装脚本缺少浏览器式 Base64 API | 2 | 使用纯 JavaScript UTF-8 与 Base64 编码函数调用 apply_patch 模式 |
 | GitHub Contents API 查询固定权重时连接超时 | 1 | 改用固定 commit 的 raw 地址下载并本地计算 SHA-256 |
+| README 刷新时自动审批额度耗尽且沙箱初始化失败 | 2 | 未绕过审批；等待额度恢复后继续使用 apply_patch |
+| README 进度补丁包含多余空 hunk | 1 | 删除空 hunk 和误放内容后重新应用补丁 |
 
 ## Notes
 

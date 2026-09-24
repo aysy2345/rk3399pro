@@ -1,19 +1,130 @@
 # RK3399Pro 本地人脸识别
 
-本项目面向 RK3399Pro，使用 USB UVC 摄像头实现 50 人以内的离线 1:N 人脸识别，并通过 PyQt5 提供添加和管理成员的桌面界面。
+本项目面向 RK3399Pro，计划使用 USB UVC 摄像头实现 50 人以内的离线 1:N 人脸识别，并通过 PyQt5 提供添加成员、改名、重新采集和删除成员等本地管理功能。
+
+识别方案采用 RetinaFace MobileNet0.25 检测人脸和五点关键点，经过人脸对齐后由 MobileFaceNet 提取特征，最后使用本地特征库进行余弦相似度匹配。
 
 ## 当前状态
 
-项目处于 Phase 3，正在实现不依赖模型和开发板的配置、人脸库与识别算法核心。
+项目当前进入 **Phase 5：摄像头、工作线程与桌面界面**。
 
-## 文档
+> 当前版本已经完成算法核心和两个 ONNX 推理后端，但尚未完成 RKNN 转换、板端推理后端、摄像头工作线程和 PyQt5 完整界面，因此暂时不能直接复制到 RK3399Pro 运行完整应用。
 
-- 系统设计：`docs/superpowers/specs/2026-09-24-rk3399pro-face-recognition-design.md`
-- 实施计划：`docs/superpowers/plans/2026-09-24-rk3399pro-face-recognition-implementation.md`
-- 当前任务：`task_plan.md`
-- 研究结论：`findings.md`
-- 进度记录：`progress.md`
+| 阶段 | 状态 |
+|---|---|
+| 需求与资料梳理 | 已完成 |
+| 方案与实施规划 | 已完成 |
+| 项目骨架与纯算法核心 | 已完成 |
+| ONNX 推理与模型验证 | 已完成 |
+| 摄像头、工作线程与桌面界面 | 待实现 |
+| RKNN 模型转换 | 待实现 |
+| RK3399Pro 板端集成 | 待实现 |
+| 阈值校准与现场验收 | 待实现 |
+
+详细进度见 [task_plan.md](task_plan.md) 和 [progress.md](progress.md)。
+
+## 已完成功能
+
+- 配置加载、字段校验和运行路径检查。
+- 成员信息与特征矩阵的本地存储、原子更新和故障回滚。
+- 新增成员、改名、替换特征和删除成员所需的数据层能力。
+- 五点人脸对齐、人脸质量检查和登记样本聚合。
+- L2 特征归一化、余弦相似度匹配和陌生人判断。
+- 连续 5 帧至少 3 帧一致的身份稳定策略。
+- 可用于无模型测试的 Fake 检测器和特征提取器。
+- RetinaFace MobileNet0.25 和 MobileFaceNet ONNX Runtime 后端。
+- Torch/PyTorch、ONNX 和 ONNX Runtime 输出一致性验证。
+
+当前自动化测试共 28 项，覆盖配置、成员、人脸库、核心算法和推理层。
+
+## 识别流程
+
+```text
+USB UVC 摄像头
+  -> RetinaFace 检测人脸框和五点关键点
+  -> 五点仿射对齐为 112x112 人脸
+  -> MobileFaceNet 提取 512 维归一化特征
+  -> 与 50 人以内本地特征库计算余弦相似度
+  -> 多帧稳定确认
+  -> 显示成员姓名、相似度或“陌生人”
+```
+
+添加成员不需要重新训练模型。程序会采集多张有效人脸，过滤重复或异常样本，生成平均特征模板并立即写入本地人脸库。
+
+## 模型
+
+| 模型 | 输入 | 输出 | 当前状态 |
+|---|---|---|---|
+| RetinaFace MobileNet0.25 | `1x3x640x640` BGR float32，减去 `[104,117,123]` | 16800 个边框、二分类分数和五点关键点 | ONNX 已导出并验证 |
+| MobileFaceNet | `1x3x112x112` BGR float32，`(pixel-127.5)/127.5` | 512 维特征 | ONNX 已导出并验证 |
+
+模型来源、固定 revision、许可证、输入输出和 SHA-256 记录在 [模型清单](models/model-manifest.example.json)。模型二进制文件、登记照片和人脸特征库不会提交到普通 Git 历史。
+
+模型目录说明见 [models/README.md](models/README.md)。
+
+## 本机验证
+
+推荐使用标准 Windows Python 3.11 创建测试环境：
+
+```powershell
+py -3.11 -m venv .test-venv
+.\.test-venv\Scripts\Activate.ps1
+python -m pip install -r requirements-test.txt
+python -m pytest -q
+```
+
+需要重新导出并验证 ONNX 时：
+
+```powershell
+python -m pip install -r requirements-model-export.txt
+python tools/models/export_mobilefacenet_onnx.py
+python tools/models/export_retinaface_onnx.py
+```
+
+导出脚本需要先按 [模型目录说明](models/README.md) 准备本地权重和候选源码；这些文件由 `.gitignore` 排除。
+
+## 最终上板路线
+
+完整部署分为三个环境：
+
+| 环境 | 作用 | 主要产物或任务 |
+|---|---|---|
+| Windows 开发机 | 开发、单元测试和 ONNX 验证 | `.onnx` 模型和应用源码 |
+| Ubuntu 18.04 x86_64 | 使用 RKNN Toolkit 1.7.1 转换模型 | `.rknn` 模型 |
+| RK3399Pro Ubuntu 18.04 ARM64 | 使用 RKNN Toolkit Lite 1.7.1 运行 | USB 摄像头、NPU 推理和 PyQt5 界面 |
+
+板端计划使用 Python 3.7、OpenCV 4.5.4.60、NumPy 1.16.3 和 PyQt5。最终还需要完成：
+
+1. USB 摄像头封装和识别工作线程。
+2. PyQt5 主窗口、添加成员和成员管理界面。
+3. 两个 ONNX 模型到 RKNN 的转换及输出一致性验证。
+4. RKNN Toolkit Lite 推理后端。
+5. 板端性能测试、阈值校准和两小时稳定运行验证。
+
+板端依赖基线见 [requirements-rk3399pro.txt](requirements-rk3399pro.txt)。
 
 ## 配置
 
-复制 `configs/app.example.json` 为自己的运行配置，并根据实际模型和数据目录修改路径。识别阈值只是初始值，必须使用现场验证集校准。
+复制示例配置后，根据模型和数据目录修改路径：
+
+```powershell
+Copy-Item configs/app.example.json configs/app.json
+```
+
+示例配置默认指向：
+
+```text
+models/retinaface_mobilenet025.rknn
+models/mobilefacenet.rknn
+```
+
+检测阈值和识别阈值只是初始值，最终必须使用独立的现场验证集校准，不能直接把示例值视为最终参数。
+
+## 项目文档
+
+- [系统设计](docs/superpowers/specs/2026-09-24-rk3399pro-face-recognition-design.md)
+- [详细实施计划](docs/superpowers/plans/2026-09-24-rk3399pro-face-recognition-implementation.md)
+- [README 刷新设计](docs/superpowers/specs/2026-09-24-readme-refresh-design.md)
+- [当前任务计划](task_plan.md)
+- [研究结论](findings.md)
+- [进度记录](progress.md)

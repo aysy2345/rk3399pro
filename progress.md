@@ -71,6 +71,21 @@
   - `tools/models/export_mobilefacenet_onnx.py`
   - `tools/models/export_retinaface_onnx.py`
 
+### 文档维护：GitHub README 刷新
+
+- **Status:** complete
+- Actions taken:
+  - 用户确认方案 B：GitHub 首页展示真实进度、已完成功能、模型、验证命令和上板路线。
+  - 编写并提交 README 刷新设计说明。
+  - 重写根目录 README，明确 Phase 1 至 Phase 4 已完成、Phase 5 及后续待实现。
+  - 验证 README 全部相对链接存在，并运行完整单元测试。
+  - 提交根 README、计划与进度更新并推送到 GitHub `main`。
+- Files created/modified:
+  - `README.md`
+  - `docs/superpowers/specs/2026-09-24-readme-refresh-design.md`
+  - `task_plan.md`
+  - `progress.md`
+
 ## Test Results
 
 | Test | Input | Expected | Actual | Status |
@@ -90,6 +105,8 @@
 | RetinaFace ONNX 一致性 | 固定随机输入 | 三输出最大绝对误差小于 1e-4，余弦不低于 0.99999 | 最大误差不超过 1.65e-05，余弦均高于 0.999999999998 | 通过 |
 | 真实 RetinaFace 适配器 | 640x480 全零 BGR 图 | 可完成推理和后处理 | 完成，阈值 0.8 下 0 个检测结果 | 通过 |
 | Phase 4 CodeGraph 同步 | 新增推理与导出源码 | 索引无待处理变化 | 25 个文件、254 个节点，索引最新 | 通过 |
+| README 相对链接 | 根 README | 所有本地链接目标存在 | 全部存在 | 通过 |
+| README 更新后单元测试 | 28 项 | 全部通过 | 28 项通过，耗时 0.75 秒 | 通过 |
 
 ## Error Log
 
@@ -107,6 +124,8 @@
 | 2026-09-24 | GitHub 搜索请求返回 `unexpected EOF` | 1 | 改用 GitHub API 直接读取候选仓库元数据和文件树 |
 | 2026-09-24 | apply_patch 包装脚本不存在 `btoa` 和 `TextEncoder` | 2 | 改用纯 JavaScript UTF-8 与 Base64 编码函数，继续通过 apply_patch 模式编辑 |
 | 2026-09-24 | GitHub Contents API 查询固定权重时连接超时 | 1 | 改用固定 commit 的 raw 地址下载并本地计算 SHA-256 |
+| 2026-09-24 | README 刷新时自动审批额度耗尽且沙箱初始化失败 | 2 | 未绕过审批；等待额度恢复后继续使用 apply_patch |
+| 2026-09-24 | README 进度补丁包含多余空 hunk | 1 | 删除空 hunk 后重新应用补丁 |
 
 ## 5-Question Reboot Check
 
