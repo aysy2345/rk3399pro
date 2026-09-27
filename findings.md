@@ -171,3 +171,6 @@
 - RKNN 转换核心使用延迟导入和工厂注入隔离 Toolkit 依赖；Windows 测试可完整验证 `config -> load_onnx -> build -> export_rknn -> release` 调用链。
 - 为避免覆盖已验证模型，转换核心在执行前拒绝已存在的 RKNN 输出或摘要；成功后记录输入输出 SHA-256、预处理、量化、预编译和 Toolkit 版本。
 - 非量化构建不传 `dataset` 参数；INT8 构建要求存在且至少包含一条非空记录的校准清单。
+- 两个转换命令共用同一参数层，默认预编译；INT8 默认输出自动添加 `_int8`，显式输出也必须使用该后缀，避免覆盖或混淆非量化模型。
+- 直接执行入口会把项目根目录加入 `sys.path`，因此实施计划中的 `python tools/rknn/convert_*.py` 命令不依赖预先安装项目包。
+- 当前 Windows 工具输出捕获会把 `argparse` 中文帮助显示为乱码；源码与 pytest 捕获均为 UTF-8，目标 Ubuntu 18.04 环境应以 UTF-8 locale 运行，环境手册需明确该要求。

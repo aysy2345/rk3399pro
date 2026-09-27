@@ -488,6 +488,13 @@
 - Task 2 定向测试通过：转换核心与契约共 `28 passed`。
 - Task 2 完整回归通过：`134 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
 - CodeGraph 已更新为 62 个 Python 文件、842 个节点、1674 条边，索引状态最新。
+- Phase 6 Task 3 已开始：新增 CLI 红灯测试，覆盖参数映射、INT8 默认命名、中文参数错误、转换失败退出码和两个入口的模型选择。
+- Task 3 红灯验证符合预期：测试收集时报两个转换入口无法从 `tools.rknn` 导入。
+- 已添加共享 CLI 参数层以及 RetinaFace、MobileFaceNet 两个可直接执行的薄入口。
+- Task 3 CLI 定向测试通过：`11 passed`。
+- 两个脚本的 `--help` 均可直接运行并列出完整参数；当前 Windows 捕获终端存在中文编码显示问题，已记录为 Ubuntu 环境文档要求，不影响参数解析与测试。
+- Task 3 完整回归通过：`145 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
+- CodeGraph 已更新为 66 个 Python 文件、884 个节点、1739 条边，索引状态最新。
 
 ## 5-Question Reboot Check
 
