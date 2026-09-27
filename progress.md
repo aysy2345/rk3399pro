@@ -495,6 +495,12 @@
 - 两个脚本的 `--help` 均可直接运行并列出完整参数；当前 Windows 捕获终端存在中文编码显示问题，已记录为 Ubuntu 环境文档要求，不影响参数解析与测试。
 - Task 3 完整回归通过：`145 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
 - CodeGraph 已更新为 66 个 Python 文件、884 个节点、1739 条边，索引状态最新。
+- Phase 6 Task 4 已开始：新增校准清单红灯测试，覆盖递归过滤、损坏图片、绝对路径、固定种子抽样、MobileFaceNet 缩放校验、禁止覆盖与 CLI 输出。
+- Task 4 红灯验证符合预期：pytest 在收集时报告 `ModuleNotFoundError: tools.rknn.build_calibration_list`。
+- 已实现图片发现与规范化路径去重、OpenCV 解码和目标尺寸缩放检查、固定种子抽样、原子清单写入及 `--force` 显式覆盖。
+- Task 4 定向测试通过：`9 passed`；清单 CLI 的 `--help` 可直接执行。
+- Task 4 完整回归通过：`154 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
+- CodeGraph 已更新为 68 个 Python 文件、916 个节点、1788 条边，索引状态最新。
 
 ## 5-Question Reboot Check
 

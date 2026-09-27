@@ -44,5 +44,11 @@ models/*.pt
 models/.sources/
 test-output/
 
+# Local RKNN calibration data and conversion reports
+rknn-data/
+rknn-results/
+*.rknn-dataset.txt
+models/*.rknn.json
+
 # Local brainstorming visual companion
 .superpowers/
