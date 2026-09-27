@@ -475,6 +475,12 @@
 - 已核对工具目录、pytest 结构、模型说明和 `.gitignore`，具备编写实施计划所需信息。
 - 已按确认设计编写 RKNN 模型转换实施计划，拆分为契约、转换核心、CLI、校准清单、输出验证、虚拟机手册、主机回归和真实模型验收 8 个任务。
 - 计划自检发现两条验收命令仍使用尖括号路径，并且预编译开关默认值不够明确；已改为固定数据路径，并规定默认启用预编译、仅用 `--no-precompile` 显式关闭。
+- Phase 6 Task 1 已开始：先添加 RKNN 模型契约测试，覆盖两个内置模型、名称解析和非法参数拒绝；实现代码尚未添加。
+- Task 1 红灯验证符合预期：pytest 在收集时报告 `ModuleNotFoundError: tools.rknn`。
+- 已添加兼容 Python 3.6 的 `ModelContract`、两个内置模型契约和大小写不敏感的契约查询入口。
+- Task 1 定向测试通过：`15 passed`。
+- compileall 与 `git diff --check` 通过；CodeGraph 已更新为 60 个 Python 文件、802 个节点、1586 条边，索引状态最新。
+- Task 1 完整回归通过：`121 passed, 11 warnings`；警告均为既有 PyQt SIP 弃用提示。
 
 ## 5-Question Reboot Check
 

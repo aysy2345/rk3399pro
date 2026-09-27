@@ -105,12 +105,13 @@ Phase 6: RKNN 模型转换
 
 **实施计划：** `docs/superpowers/plans/2026-09-27-rknn-model-conversion-implementation.md`。
 
+- [x] Task 1：固定 RetinaFace 与 MobileFaceNet 的 RKNN 转换契约
 - [ ] 在 Ubuntu 18.04 x86_64 配置 RKNN Toolkit 1.7.1
 - [ ] 编写 RetinaFace 转换脚本
 - [ ] 编写 MobileFaceNet 转换脚本
 - [ ] 比较 ONNX 与 RKNN 输出
 - [ ] 评估非量化和 INT8 量化结果
-- **Status:** pending
+- **Status:** in_progress
 
 ### Phase 7: RK3399Pro 板端集成
 

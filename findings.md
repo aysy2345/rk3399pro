@@ -166,3 +166,5 @@
 - 当前仓库只有 `tools/models/export_*_onnx.py`，尚无 `tools/rknn`；测试体系为 pytest，RKNN Toolkit 不应加入 Windows `requirements-test.txt`。
 - `.gitignore` 已排除 `models/*.rknn`、模型二进制、日志和数据目录，但还需在实施时核对校准清单与验证报告的本地输出路径。
 - `models/README.md` 已要求记录模型来源、SHA-256、输入输出和 ONNX/RKNN 一致性；Phase 6 文档应扩展而不是另建冲突规范。
+- RKNN Toolkit 1.x 的 `channel_mean_value` 由三个通道均值和一个缩放除数组成；当前契约固定 RetinaFace 为 `104 117 123 1`，MobileFaceNet 为 `127.5 127.5 127.5 127.5`，两者都保持 BGR 顺序。
+- 转换契约模块只使用 Python 标准库，不导入 RKNN、ONNX Runtime 或模型文件，因此可在 Windows Python 3.11 测试并在 Ubuntu Python 3.6 复用。
