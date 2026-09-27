@@ -481,6 +481,13 @@
 - Task 1 定向测试通过：`15 passed`。
 - compileall 与 `git diff --check` 通过；CodeGraph 已更新为 60 个 Python 文件、802 个节点、1586 条边，索引状态最新。
 - Task 1 完整回归通过：`121 passed, 11 warnings`；警告均为既有 PyQt SIP 弃用提示。
+- Phase 6 Task 2 已开始：新增转换核心红灯测试，覆盖非量化、INT8、输入校验、禁止覆盖、四个 RKNN API 失败阶段、输出缺失、摘要和资源释放。
+- Task 2 红灯验证符合预期：pytest 在收集时报告 `ModuleNotFoundError: tools.rknn.converter`。
+- 已实现延迟导入 RKNN Toolkit 的转换核心、请求校验、阶段化错误、资源释放、禁止覆盖、SHA-256 与原子 JSON 摘要。
+- 补充 release 非零返回码测试时，首个多文件补丁包含空 hunk，补丁校验失败且未修改文件；移除无效 hunk 后重试。
+- Task 2 定向测试通过：转换核心与契约共 `28 passed`。
+- Task 2 完整回归通过：`134 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
+- CodeGraph 已更新为 62 个 Python 文件、842 个节点、1674 条边，索引状态最新。
 
 ## 5-Question Reboot Check
 

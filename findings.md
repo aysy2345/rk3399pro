@@ -168,3 +168,6 @@
 - `models/README.md` 已要求记录模型来源、SHA-256、输入输出和 ONNX/RKNN 一致性；Phase 6 文档应扩展而不是另建冲突规范。
 - RKNN Toolkit 1.x 的 `channel_mean_value` 由三个通道均值和一个缩放除数组成；当前契约固定 RetinaFace 为 `104 117 123 1`，MobileFaceNet 为 `127.5 127.5 127.5 127.5`，两者都保持 BGR 顺序。
 - 转换契约模块只使用 Python 标准库，不导入 RKNN、ONNX Runtime 或模型文件，因此可在 Windows Python 3.11 测试并在 Ubuntu Python 3.6 复用。
+- RKNN 转换核心使用延迟导入和工厂注入隔离 Toolkit 依赖；Windows 测试可完整验证 `config -> load_onnx -> build -> export_rknn -> release` 调用链。
+- 为避免覆盖已验证模型，转换核心在执行前拒绝已存在的 RKNN 输出或摘要；成功后记录输入输出 SHA-256、预处理、量化、预编译和 Toolkit 版本。
+- 非量化构建不传 `dataset` 参数；INT8 构建要求存在且至少包含一条非空记录的校准清单。
