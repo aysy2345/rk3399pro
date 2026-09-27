@@ -142,3 +142,23 @@
 - Phase 5 使用本地视觉伴侣对比三种主界面布局；用户选择 B“上下分区”，即横向视频区域位于上方，开始/停止、添加成员、成员管理和识别状态位于下方。
 - 添加成员流程对比后，用户选择 A“三步向导”：基本信息、采集样本、确认保存。
 - 成员管理布局对比后，用户选择 A“表格管理”，优先保证 50 人以内成员的浏览和定位效率。
+
+## 2026-09-27 Phase 6 环境审计
+
+- 当前 Windows 主机已安装 `wsl.exe`，但尚未安装任何 Linux 发行版，因此暂时不能直接建立 Ubuntu 18.04 转换环境。
+- 已检测到 Docker CLI，但 Docker Desktop Linux Engine 未运行，当前无法连接 `dockerDesktopLinuxEngine`。
+- 未检测到 Conda；默认 `python` 为 MSYS2 Python 3.11，不适合直接安装面向 Python 3.6/3.7 的 RKNN Toolkit 1.x。
+- 仓库已有 RetinaFace 与 MobileFaceNet 的 ONNX 导出脚本，但还没有 RKNN 转换脚本、量化校准数据清单或 ONNX/RKNN 对比工具。
+- 两个 ONNX 模型文件均已就位，可作为 Phase 6 的转换输入。
+- 本阶段读取 Word/PPT 仅用于提取课程中的 RKNN 1.x 操作参数，不修改原始课程文件。
+- IPC Camera 课程“目标检测模型的转化”目录包含 3 个文件：130 MB 配套代码 RAR、3.6 MB 课件 PPTX、2.9 MB 实验手册 DOCX。
+- 当前先按用户最初要求读取 Word 和 PPT；配套代码压缩包暂不展开，除非 Office 资料不足以确定转换接口。
+- 课程明确的转换主机基线为 Ubuntu 18.04.6 x86_64、Python 3.6.9、RKNN Toolkit 1.7.1（`cp36-cp36m-linux_x86_64` wheel）。
+- 转换流程为 ONNX 输入，`build(do_quantization=True, dataset='./1.txt', pre_compile=True)`，再 `export_rknn`；课程强调预编译模型必须在 x86_64 Ubuntu 上从原模型生成。
+- 量化需要原始数据集生成代表性图片列表；课程先运行 `get_data.py`，再运行 `rknn_convert.py`。
+- 无连接开发板时转换日志可能出现设备相关 Error，课程说明这类错误不影响模型文件生成；应以 `export_rknn` 返回值和输出文件为成功标准。
+- 课件只给出通用 YOLO 转换流程，未提供 RetinaFace 三输出和 MobileFaceNet 512 维嵌入的一致性验收规则；本项目必须补充专用校验。
+- 现有总设计要求：RetinaFace 转换失败时只替换检测器，保持对齐、MobileFaceNet 与存储接口不变。
+- 现有实施计划规定先做非量化转换与 ONNX/RKNN 对比，再评估 INT8；验收包含检测框/关键点误差、MobileFaceNet 特征余弦相似度和不支持算子检查。
+- 总实施计划把该工作标为“阶段七”，当前滚动计划因前序任务合并标为“Phase 6”；两者内容一致，仅编号不同。
+- CodeGraph 索引当前为最新：57 个 Python 文件、779 个节点、1561 条边。
