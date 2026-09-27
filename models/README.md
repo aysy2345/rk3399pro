@@ -27,3 +27,18 @@ RetinaFace 的候选源码先缓存在 models/.sources/foamliu-mobilefacenet，�
     python tools/models/export_retinaface_onnx.py
 
 该脚本分别核对边框、分类分数和五点关键点三个输出。
+
+## RKNN 转换
+
+RKNN 转换工具已经完成，真实模型仍需在 Ubuntu 18.04 x86_64、Python 3.6.9 和 RKNN Toolkit 1.7.1 中生成并验证。完整步骤见 [RKNN 模型转换虚拟机操作手册](../docs/rknn-conversion-setup.md)。
+
+非量化转换入口：
+
+    python tools/rknn/convert_retinaface.py
+    python tools/rknn/convert_mobilefacenet.py
+
+INT8 转换必须提供校准清单，输出文件必须带 `_int8.rknn` 后缀。转换后使用：
+
+    python tools/rknn/validate_outputs.py --help
+
+验证报告必须包含模型 SHA-256、逐图片结果和整体通过状态。`.rknn`、校准图片、清单和本地报告不会提交到 Git。

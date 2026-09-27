@@ -1,5 +1,10 @@
 # Findings & Decisions
 
+## 2026-09-27 Task 6 文档复核
+
+- RKNN 转换手册必须明确区分“转换工具已完成”和“真实模型尚未转换验证”，避免把工具完成误写成模型已可部署。
+- Anaconda 安装文件名取决于课程提供的安装包，因此手册通过 `find` 获取唯一安装程序，再用变量执行，避免硬编码不存在的版本文件名。
+
 ## Requirements
 
 - 在 RK3399Pro 上运行离线 1:N 人脸识别。
@@ -181,3 +186,6 @@
 - RetinaFace 一致性验证应按最后一维 `4/2/10` 映射输出，再用相同阈值解码到源图坐标；不能依赖 ONNX 与 RKNN 的输出顺序。
 - 新增回归测试将 Python 3.6 兼容验证解码器与现有应用 `OnnxRetinaFaceDetector` 对同一组非零合成输出逐坐标比较，框和五点关键点在 `1e-6` 容差内一致。
 - MobileFaceNet 指标先检查两个输出均为 512 个有限值，再用向量范数计算余弦相似度；该计算等价于先做 L2 归一化后点积。
+- 课程手册给出的 CPU 转换环境顺序为：创建 `onnx2rknn` Python 3.6.9 环境，单独安装 `torch==1.5.1+cpu`/`torchvision==0.6.1+cpu`，安装 `requirements-cpu.txt`，最后安装 `rknn_toolkit-1.7.1-cp36-cp36m-linux_x86_64.whl`。
+- 课程特别要求官方 requirements 文件删除 torch 与 torchvision，并添加 `tqdm==4.64.1`；手册还列出 NumPy 1.16.3、SciPy 1.2.1、Pillow 5.3.0、TensorFlow CPU 1.14.0、MXNet 1.5.0 和 YAML 6.0 基线。
+- 真实转换还需要本项目的 ONNX/RKNN 验证依赖，因此环境手册需在课程基线上补充 Python 3.6 可用的 ONNX Runtime 与 OpenCV，并在安装后再次固定 NumPy 1.16.3。

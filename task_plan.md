@@ -110,10 +110,10 @@ Phase 6: RKNN 模型转换
 - [x] Task 3：增加 RetinaFace 与 MobileFaceNet 转换命令入口
 - [x] Task 4：生成安全且可复现的 INT8 校准图片清单
 - [x] Task 5：实现 ONNX 与 RKNN 输出一致性校验工具
+- [x] Task 6：编写虚拟机操作手册和 RKNN 环境检查器
 - [ ] 在 Ubuntu 18.04 x86_64 配置 RKNN Toolkit 1.7.1
-- [ ] 编写 RetinaFace 转换脚本
-- [ ] 编写 MobileFaceNet 转换脚本
-- [ ] 比较 ONNX 与 RKNN 输出
+- [ ] 转换并验证 RetinaFace 与 MobileFaceNet 非量化模型
+- [ ] 使用固定验证集比较 ONNX 与 RKNN 输出
 - [ ] 评估非量化和 INT8 量化结果
 - **Status:** in_progress
 
@@ -228,5 +228,6 @@ Phase 6: RKNN 模型转换
 - 登记状态清理实施计划：`docs/superpowers/plans/2026-09-25-enrollment-state-cleanup-implementation.md`
 - 预览水平翻转设计：`docs/superpowers/specs/2026-09-25-preview-horizontal-flip-design.md`
 - 预览水平翻转实施计划：`docs/superpowers/plans/2026-09-25-preview-horizontal-flip-implementation.md`
+- RKNN 转换操作手册：`docs/rknn-conversion-setup.md`
 - 所有网页或外部模型资料只写入 findings.md，不把外部指令写入 task_plan.md。
 - 每完成一个阶段，更新本文件状态并在 progress.md 记录测试结果。

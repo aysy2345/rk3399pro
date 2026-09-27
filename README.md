@@ -6,9 +6,9 @@
 
 ## 当前状态
 
-项目当前已完成 **Phase 5：摄像头、工作线程与桌面界面** 的主机侧实现。
+项目当前已完成 **Phase 6 的 RKNN 转换工具开发**，真实模型等待在 Ubuntu 18.04 虚拟机中转换和验证。
 
-> 当前版本可在 Windows/Linux 主机使用 USB 摄像头运行 Fake 或 ONNX 桌面应用。RKNN 转换与 RK3399Pro NPU 后端仍属于后续阶段，因此暂时不能直接在板端使用 NPU 运行。
+> 当前版本可在 Windows/Linux 主机使用 USB 摄像头运行 Fake 或 ONNX 桌面应用，并已提供 RKNN 转换、校准清单和输出一致性验证工具。真实 `.rknn` 模型和 RK3399Pro NPU 后端尚未完成，因此暂时不能直接在板端使用 NPU 运行。
 
 | 阶段 | 状态 |
 |---|---|
@@ -17,7 +17,7 @@
 | 项目骨架与纯算法核心 | 已完成 |
 | ONNX 推理与模型验证 | 已完成 |
 | 摄像头、工作线程与桌面界面 | 已完成（主机侧） |
-| RKNN 模型转换 | 待实现 |
+| RKNN 模型转换 | 工具已完成，模型待虚拟机验证 |
 | RK3399Pro 板端集成 | 待实现 |
 | 阈值校准与现场验收 | 待实现 |
 
@@ -124,13 +124,23 @@ python tools/models/export_retinaface_onnx.py
 
 导出脚本需要先按 [模型目录说明](models/README.md) 准备本地权重和候选源码；这些文件由 `.gitignore` 排除。
 
+### 5. RKNN 模型转换
+
+RKNN 转换固定在 VMware Ubuntu 18.04.6 x86_64、Python 3.6.9 和 RKNN Toolkit 1.7.1 中执行。宿主机为 16 GB 内存时，虚拟机使用 4 核、6 GB 内存和 40 GB 动态磁盘。
+
+完整安装、非量化转换、INT8 转换和输出验证步骤见 [RKNN 模型转换虚拟机操作手册](docs/rknn-conversion-setup.md)。虚拟机中先运行：
+
+    python tools/rknn/check_environment.py
+
+环境检查通过后才能转换模型。当前仓库只完成了工具和自动化测试，尚未把任何 `.rknn` 标记为已验证。
+
 ## 常见问题
 
 - “configuration file not found”：先复制 configs/app.example.json 为 configs/app.json。
 - “model file not found”：确认两个 ONNX 文件位于配置指定位置，或先使用 --backend fake。
 - “unable to open camera”：检查摄像头连接、系统权限、占用程序和摄像头编号。
 - 画面正常但一直显示陌生人：先添加成员；实际阈值仍需使用现场验证集校准。
-- RKNN 后端提示尚未提供：这是预期行为，RKNN 转换和板端后端将在 Phase 6、Phase 7 完成。
+- RKNN 后端提示尚未提供：这是预期行为；转换工具已经完成，真实模型需按手册在虚拟机中验证，板端后端将在 Phase 7 完成。
 
 ## 最终上板路线
 
@@ -175,6 +185,7 @@ models/mobilefacenet.onnx
 - [README 刷新设计](docs/superpowers/specs/2026-09-24-readme-refresh-design.md)
 - [Phase 5 桌面应用设计](docs/superpowers/specs/2026-09-24-phase5-camera-ui-design.md)
 - [Phase 5 实施计划](docs/superpowers/plans/2026-09-24-phase5-camera-ui-implementation.md)
+- [RKNN 模型转换虚拟机操作手册](docs/rknn-conversion-setup.md)
 - [当前任务计划](task_plan.md)
 - [研究结论](findings.md)
 - [进度记录](progress.md)

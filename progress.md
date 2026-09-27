@@ -1,5 +1,15 @@
 # Progress Log
 
+## Session: 2026-09-27（Phase 6 / Task 6 收尾）
+
+- 终端首次以默认沙箱启动时连续出现 `setup refresh had errors`，改为获准的沙箱外只读检查后恢复；这不是项目代码错误。
+- 检查转换手册与 README 后，补充了可直接执行的 Anaconda 安装命令，并修正 README 中已过时的 Phase 6 提示。
+- Task 6 已加入任务计划：环境手册与检查器完成；真实模型转换和验证仍保持待办状态。
+- 环境检查器定向测试通过：`4 passed`；项目全量测试通过：`175 passed, 11 warnings`。
+- 首次语法检查误写不存在的根目录 `app`，`compileall` 提示 `Can't list 'app'`；改用实际目录 `face_recognition_app` 复查。
+- 正确目录的 `compileall` 通过；检查器在 Windows Python 3.11 主机上按预期返回退出码 1，并逐项报告环境差异。
+- CodeGraph 已同步为 74 个 Python 文件、1017 个节点和 1987 条边，索引状态最新；文档链接、关键词和 `git diff --check` 均通过。
+
 ## Session: 2026-09-24
 
 ### Phase 1: 需求与资料梳理
@@ -502,6 +512,13 @@
 - Task 4 完整回归通过：`154 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
 - CodeGraph 已更新为 68 个 Python 文件、916 个节点、1788 条边，索引状态最新。
 - Phase 6 Task 5 已开始：CodeGraph 确认现有 ONNX 后处理逻辑可作为公式基准，但其 Python 3.7 语法不能直接用于 Python 3.6 转换环境。
+- Phase 6 Task 6 已开始：已核对课程实验手册中的 Python 3.6.9、CPU 版 PyTorch、requirements-cpu 和 RKNN Toolkit 1.7.1 安装顺序。
+- 已添加环境检查红灯测试，覆盖完全匹配、平台与版本不符、缺失包/动态库、兼容构建后缀和非零退出码。
+- Task 6 环境检查红灯符合预期：测试收集时报 `tools.rknn.check_environment` 无法导入。
+- 已实现 Python 3.6 兼容的环境探测与 JSON 报告，检查固定版本、Linux x86_64、UTF-8 和关键动态库。
+- Task 6 首个多文件文档补丁因 README 状态段落的实际换行与预期锚点不同而整体未应用；未产生文档修改，改为读取真实上下文后拆分补丁。
+- 已编写从 VMware 配置、课程依赖安装、模型复制、环境检查、校准清单、非量化、INT8 到一致性验收的完整 Ubuntu 18.04 操作手册。
+- 已更新根 README 和模型 README，将 Phase 6 状态明确为“工具已完成，模型待虚拟机验证”。
 - Task 5 红灯验证符合预期：测试收集时报告 `tools.rknn.metrics` 和 `tools.rknn.validate_outputs` 不存在。
 - 已实现纯 NumPy 的余弦、RetinaFace 输出映射、prior 解码、NMS、IoU 匹配和坐标误差指标，并添加可注入运行器的逐样本 JSON 验证报告。
 - Task 5 定向测试通过：`17 passed`，其中包含验证解码器与应用 ONNX 后端的公式一致性回归。
