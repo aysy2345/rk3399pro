@@ -501,6 +501,13 @@
 - Task 4 定向测试通过：`9 passed`；清单 CLI 的 `--help` 可直接执行。
 - Task 4 完整回归通过：`154 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
 - CodeGraph 已更新为 68 个 Python 文件、916 个节点、1788 条边，索引状态最新。
+- Phase 6 Task 5 已开始：CodeGraph 确认现有 ONNX 后处理逻辑可作为公式基准，但其 Python 3.7 语法不能直接用于 Python 3.6 转换环境。
+- Task 5 红灯验证符合预期：测试收集时报告 `tools.rknn.metrics` 和 `tools.rknn.validate_outputs` 不存在。
+- 已实现纯 NumPy 的余弦、RetinaFace 输出映射、prior 解码、NMS、IoU 匹配和坐标误差指标，并添加可注入运行器的逐样本 JSON 验证报告。
+- Task 5 定向测试通过：`17 passed`，其中包含验证解码器与应用 ONNX 后端的公式一致性回归。
+- 输出对比 CLI 的 `--help` 可直接执行，支持余弦、框、关键点、检测和 NMS 阈值参数。
+- Task 5 完整回归通过：`171 passed, 11 warnings`；compileall 与 `git diff --check` 通过。
+- CodeGraph 已更新为 72 个 Python 文件、993 个节点、1949 条边，索引状态最新。
 
 ## 5-Question Reboot Check
 

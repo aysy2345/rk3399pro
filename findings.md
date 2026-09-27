@@ -177,3 +177,7 @@
 - 校准清单工具对支持扩展名执行实际 OpenCV 解码和目标输入尺寸缩放检查，损坏图片不会进入 Toolkit 数据集。
 - 固定随机种子只在候选图片多于上限时抽样，抽样结果再次按规范化绝对路径排序，便于比较与复现。
 - 本地校准目录、转换报告、`*.rknn-dataset.txt` 和默认 `.rknn.json` 摘要已加入 Git 忽略范围。
+- 现有应用后处理文件使用 Python 3.7 的 `from __future__ import annotations` 和 dataclass，不能被 Python 3.6.9 转换环境直接导入；Task 5 验证工具必须提供独立的 Python 3.6 兼容 NumPy 后处理，并用回归测试锁定与应用相同的 prior、解码和 NMS 公式。
+- RetinaFace 一致性验证应按最后一维 `4/2/10` 映射输出，再用相同阈值解码到源图坐标；不能依赖 ONNX 与 RKNN 的输出顺序。
+- 新增回归测试将 Python 3.6 兼容验证解码器与现有应用 `OnnxRetinaFaceDetector` 对同一组非零合成输出逐坐标比较，框和五点关键点在 `1e-6` 容差内一致。
+- MobileFaceNet 指标先检查两个输出均为 512 个有限值，再用向量范数计算余弦相似度；该计算等价于先做 L2 归一化后点积。
