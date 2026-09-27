@@ -162,3 +162,7 @@
 - 现有实施计划规定先做非量化转换与 ONNX/RKNN 对比，再评估 INT8；验收包含检测框/关键点误差、MobileFaceNet 特征余弦相似度和不支持算子检查。
 - 总实施计划把该工作标为“阶段七”，当前滚动计划因前序任务合并标为“Phase 6”；两者内容一致，仅编号不同。
 - CodeGraph 索引当前为最新：57 个 Python 文件、779 个节点、1561 条边。
+- CodeGraph 上下文确认转换工具应围绕现有 `OnnxRetinaFaceDetector` 与 `OnnxMobileFaceNetEmbedder` 的预处理契约设计，并复用 RetinaFace 输出形状映射和后处理语义。
+- 当前仓库只有 `tools/models/export_*_onnx.py`，尚无 `tools/rknn`；测试体系为 pytest，RKNN Toolkit 不应加入 Windows `requirements-test.txt`。
+- `.gitignore` 已排除 `models/*.rknn`、模型二进制、日志和数据目录，但还需在实施时核对校准清单与验证报告的本地输出路径。
+- `models/README.md` 已要求记录模型来源、SHA-256、输入输出和 ONNX/RKNN 一致性；Phase 6 文档应扩展而不是另建冲突规范。

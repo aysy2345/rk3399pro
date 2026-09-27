@@ -103,6 +103,8 @@ Phase 6: RKNN 模型转换
 
 **设计状态：** 已确认 VMware Ubuntu 18.04.6 方案；设计文档为 `docs/superpowers/specs/2026-09-27-rknn-model-conversion-design.md`。
 
+**实施计划：** `docs/superpowers/plans/2026-09-27-rknn-model-conversion-implementation.md`。
+
 - [ ] 在 Ubuntu 18.04 x86_64 配置 RKNN Toolkit 1.7.1
 - [ ] 编写 RetinaFace 转换脚本
 - [ ] 编写 MobileFaceNet 转换脚本
