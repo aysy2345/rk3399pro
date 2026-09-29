@@ -1,0 +1,23 @@
+{
+  "channel_mean_value": "127.5 127.5 127.5 127.5",
+  "channel_order": "BGR",
+  "dataset": null,
+  "input_sha256": "be53e4bc6a2af3bef44254ef4f3ef9bd4d9f55ce25abc01359816c68eb25de8a",
+  "input_size": [
+    112,
+    112
+  ],
+  "model_id": "mobilefacenet",
+  "onnx_path": "/data/rknn-input/mobilefacenet.onnx",
+  "output_path": "/data/rknn-output/mobilefacenet.rknn",
+  "output_semantics": [
+    "embedding"
+  ],
+  "output_sha256": "453aada409bfa6072efabc6a1e21b017d52d9d3679bf7bc51aabadbe7a669847",
+  "precompiled": true,
+  "quantized": false,
+  "target_platforms": [
+    "rk3399pro"
+  ],
+  "toolkit_version": "unknown"
+}

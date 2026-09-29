@@ -2,6 +2,65 @@
 
 ## Session: 2026-09-27（Phase 6 / Task 6 收尾）
 
+- 用户要求后续采用逐步指导模式：每次只执行一个小步骤，用户回传命令输出或截图，核对无误后再继续。
+- 已完成宿主机第一轮检查：磁盘空间通过；CPU 固件虚拟化未开启；未检测到 VMware Workstation。下一步先开启 UEFI 虚拟化，再处理 VMware 安装。
+- BIOS 照片复核显示虚拟化开关当前已拨到开启侧，但 Windows 仍报告 False；下一步要求保存 BIOS 设置并冷启动后复查。
+- 进一步诊断得到 `HyperVisorPresent=True`，确认虚拟化实际可用；停止 BIOS 排查，进入 VMware Workstation Pro 26H1 官方下载步骤。
+- 用户已登录 Broadcom 并进入 Workstation Pro 下载列表；下一步选择 Windows 版 `26H1u1` 更新版本。
+- 已确认 `26H1u1` 的唯一 Windows 安装包及官方 SHA-256；下一步接受 Broadcom 条款并下载，不立即安装。
+- 用户已从官方页面下载 Workstation Pro 26H1u1 Windows 安装包，资源管理器显示约 267 MB；下一步进行 SHA-256 完整性校验。
+- VMware Workstation Pro 26H1u1 安装包 SHA-256 已与官方值完全一致，完整性检查通过，进入交互式安装步骤。
+- 26H1u1 Custom Setup 页面仅提供程序安装目录；保持默认 `C:\Program Files\VMware\VMware Workstation\`，虚拟机数据后续单独放到 D 盘。
+- VMware 用户体验设置采用：保留启动时检查产品更新，取消加入 CEIP，以兼顾安全更新提醒和隐私。
+- VMware 快捷方式页面保留 Desktop 与 Start Menu Programs Folder 两项默认勾选。
+- VMware 安装向导已到 Ready to install 页面，配置确认完成，下一步执行正式安装。
+- VMware Workstation Pro 26H1u1 安装向导显示 Completed，安装成功且未要求重启；下一步首次启动并确认主界面。
+- VMware Workstation Pro 26H1u1 主界面已正常打开；下一步从 Ubuntu 官方获取并校验 18.04.6 Desktop AMD64 ISO。
+- Ubuntu 18.04.6 Desktop AMD64 ISO 已下载到 `D:\VMware\ISO`，资源管理器显示约 2.34 GB；下一步与 Ubuntu 官方 SHA-256 比对。
+- Ubuntu ISO SHA-256 已与官方值 `f730be...aff11` 完全一致，校验通过；进入 VMware 自定义虚拟机创建流程。
+- 新建虚拟机向导已选择 `Custom (advanced)`，下一步确认虚拟硬件兼容性版本。
+- 虚拟硬件兼容性保持 26H1 默认的 `Workstation 25H2 or later`，不为旧版 VMware 降级。
+- 操作系统安装来源选择 `I will install the operating system later`，避免 Easy Install 自动决定账户和安装细节；创建完成后再手动挂载已校验 ISO。
+- 客户机操作系统应选择 Linux / Ubuntu 64-bit，与 Ubuntu 18.04.6 Desktop AMD64 镜像一致。
+- 虚拟机命名固定为 `RKNN-Ubuntu-18.04`，保存位置使用 `D:\VMware\VMs\RKNN-Ubuntu-18.04`，避免占用 C 盘并便于快照管理。
+- 虚拟 CPU 拓扑采用 1 个处理器、每处理器 4 核，总计 4 vCPU；不使用多插槽配置。
+- 虚拟机内存保持 6144 MB（6 GB），处于 VMware 推荐值且适合 16 GB 宿主机。
+- 虚拟机网络选择 NAT，共享宿主机网络且不直接暴露到外部局域网。
+- SCSI I/O 控制器保持推荐的 LSI Logic，以获得 Ubuntu 18.04 的成熟兼容性。
+- 虚拟磁盘类型保持推荐的 SCSI，不使用 IDE、SATA 或 NVMe。
+- 磁盘来源选择创建新的虚拟磁盘，不复用旧盘且不直通宿主机物理磁盘。
+- 虚拟磁盘设为最大 40 GB、动态扩展（不勾选立即分配全部空间），并在 NTFS 的 D 盘保存为单个虚拟磁盘文件。
+- 虚拟磁盘文件名保持 `RKNN-Ubuntu-18.04.vmdk`，位于对应虚拟机目录内。
+- 创建摘要已核对：D 盘位置、Ubuntu 64 位、40 GB、6144 MB、NAT 和 4 vCPU 均正确；创建前进入 Customize Hardware 挂载 ISO。
+- Customize Hardware 已打开，CD/DVD 当前为 Auto detect；下一步改为指定 Ubuntu 18.04.6 ISO 并设置开机连接。
+- CD/DVD 已指定已校验的 `ubuntu-18.04.6-desktop-amd64.iso`，并勾选 Connect at power on；虚拟机可完成创建。
+- `RKNN-Ubuntu-18.04` 已创建完成，关机状态概览确认 6 GB、4 核、40 GB SCSI、NAT 与 ISO 均正确，准备首次启动。
+- 首次启动出现 VMware 侧信道缓解性能提示；保持默认安全缓解开启，仅确认提示，不为追求速度提前关闭保护。
+- 启动阶段出现 Removable Devices 普通说明；仅关闭提示，不勾选永久隐藏，也不提前点击底部 `I Finished Installing`。
+- Ubuntu 18.04.6 Welcome 安装界面已成功出现；安装语言保持 English，并进入 Install Ubuntu，而不是 Try Ubuntu。
+- Ubuntu 键盘布局保持 English (US)，确保后续终端符号输入与命令文档一致。
+- Ubuntu 软件选择采用 Minimal installation；安装阶段不下载更新、不安装第三方图形/Wi-Fi/媒体组件，系统完成后再以可控命令安装 RKNN 所需依赖。
+- Ubuntu 分区采用 Erase disk and install Ubuntu，仅作用于新建的 40 GB 虚拟磁盘；不启用加密和 LVM。
+- 分区确认只列出虚拟机内部 SCSI `sda`，将分区 1 格式化为 ext4，没有宿主机物理磁盘，可安全写入。
+- Ubuntu 时区保持 Shanghai（Asia/Shanghai），与宿主机及项目日志时间一致。
+- Ubuntu 账户规划为显示名 `RKNN User`、主机名 `rknn-ubuntu`、用户名 `rknn`，并要求密码登录；密码不记录到项目或对话笔记。
+- Ubuntu 正式安装已开始，安装器正在获取必要文件；保持等待，不点击 Skip 或 VMware 的 `I Finished Installing`。
+- Ubuntu 安装器已显示 Installation Complete，下一步执行首次重启，并在需要时断开安装 ISO。
+- 首次重启出现移除安装介质提示；下一步通过 VMware 的 Removable Devices 断开 CD/DVD ISO 后再按 Enter。
+- ISO 断开后 Ubuntu 已从虚拟磁盘正常启动，并显示 RKNN USER 登录界面，基础系统安装成功。
+- RKNN USER 已登录，Ubuntu 18.04 桌面和首次欢迎向导正常显示；下一步完成欢迎向导并关闭 VMware 安装横幅。
+- 系统联网后自动弹出 Ubuntu 20.04.6 LTS 升级提示；为保持 RKNN Toolkit 1.7.1 兼容性，明确选择 Don't Upgrade，禁止发行版升级。
+- Ubuntu 已确认“declined the upgrade to Ubuntu 20.04.6 LTS”，发行版升级已拒绝。
+- Ubuntu 欢迎向导的 Livepatch 不启用，避免绑定外部账户并保持固定、可复现的转换环境。
+- Ubuntu 遥测选择不向 Canonical 发送系统信息，减少专用转换环境的外部数据传输。
+- Ubuntu 首次欢迎向导已到 Ready to go 页面，初始隐私和版本策略配置完成。
+- 桌面首次出现约 393.3 MB 的 Software Updater 批量更新提示；不使用 GUI 一次性更新，选择 Remind Me Later，后续按固定命令安装必要组件。
+- `sudo apt update` 成功，NAT 网络、Ubuntu security 源和清华 bionic 镜像均可访问；系统报告 302 个可升级包，但暂不执行全量升级。
+- `open-vm-tools` 与 `open-vm-tools-desktop` 已安装完成且无错误，下一步重启客户机使图形与剪贴板集成生效。
+- Ubuntu 重启并登录成功，桌面分辨率已随 VMware 窗口自动适配，open-vm-tools 图形集成生效。
+- 基础核验通过：Ubuntu 18.04.6 LTS、x86_64、VMware Tools 11.0.5、LANG=en_US.UTF-8；部分 LC_* 为 zh_CN.UTF-8 仍满足 UTF-8 要求。
+- Ubuntu 已通过 `sudo poweroff` 正常关机，VMware 状态为 Powered off，准备创建 RKNN 依赖安装前的纯净基线快照。
+- 已成功创建关机态快照 `clean-ubuntu-18.04.6`，作为安装 RKNN 依赖前的可恢复基线。
 - 终端首次以默认沙箱启动时连续出现 `setup refresh had errors`，改为获准的沙箱外只读检查后恢复；这不是项目代码错误。
 - 检查转换手册与 README 后，补充了可直接执行的 Anaconda 安装命令，并修正 README 中已过时的 Phase 6 提示。
 - Task 6 已加入任务计划：环境手册与检查器完成；真实模型转换和验证仍保持待办状态。

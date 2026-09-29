@@ -66,7 +66,7 @@
 - PyTorch 1.7.1
 - Torchvision 0.8.2
 - ONNX 1.12.0
-- ONNX Runtime 1.11.1
+- ONNX Runtime 1.10.0
 - ONNX Simplifier 0.4.1
 - OpenCV 4.6.0.66
 - NumPy 1.21.6

@@ -1,0 +1,25 @@
+{
+  "channel_mean_value": "104 117 123 1",
+  "channel_order": "BGR",
+  "dataset": null,
+  "input_sha256": "34274686d588a0c0936ad2b851513c5a0d97cd69a3244129525d405509bed0b3",
+  "input_size": [
+    640,
+    640
+  ],
+  "model_id": "retinaface",
+  "onnx_path": "/data/rknn-input/retinaface_mobilenet025.onnx",
+  "output_path": "/data/rknn-output/retinaface_mobilenet025.rknn",
+  "output_semantics": [
+    "boxes",
+    "scores",
+    "landmarks"
+  ],
+  "output_sha256": "dee5f01f9a1b730f099daf8220b6a8223634d29f7402f9d46bff3ccd4a930d09",
+  "precompiled": true,
+  "quantized": false,
+  "target_platforms": [
+    "rk3399pro"
+  ],
+  "toolkit_version": "unknown"
+}

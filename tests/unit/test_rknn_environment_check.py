@@ -13,7 +13,7 @@ def _matching_probe():
             "rknn": "1.7.1",
             "numpy": "1.16.3",
             "cv2": "4.5.4",
-            "onnxruntime": "1.11.1",
+    "onnxruntime": "1.10.0",
         },
         "libraries": {"stdc++": True, "protobuf": True},
     }
@@ -68,7 +68,7 @@ def test_compatible_package_build_suffixes_are_accepted():
         "rknn": "1.7.1+build1",
         "numpy": "1.16.3",
         "cv2": "4.5.4.60",
-        "onnxruntime": "1.11.1",
+            "onnxruntime": "1.10.0",
     }
 
     report = check_environment.evaluate_environment(**probe)

@@ -82,7 +82,7 @@
 
 安装项目验证工具需要的固定版本，并最后重新固定 NumPy：
 
-    pip install onnxruntime==1.11.1 opencv-python==4.5.4.60
+pip install onnxruntime==1.10.0 opencv-python==4.5.4.60
     pip install numpy==1.16.3
     pip check
 
@@ -118,7 +118,7 @@ ONNX 和 RKNN 二进制已被 `.gitignore` 排除，不得使用 `git add -f` �
 
     python tools/rknn/check_environment.py
 
-程序检查 Python 3.6.9、Linux x86_64、UTF-8、RKNN Toolkit 1.7.1、NumPy 1.16.3、OpenCV 4.5.4、ONNX Runtime 1.11.1、libstdc++ 和 libprotobuf。只有 JSON 中 `passed` 为 `true` 才进入模型转换。
+程序检查 Python 3.6.9、Linux x86_64、UTF-8、RKNN Toolkit 1.7.1、NumPy 1.16.3、OpenCV 4.5.4、ONNX Runtime 1.10.0、libstdc++ 和 libprotobuf。只有 JSON 中 `passed` 为 `true` 才进入模型转换。
 
 环境通过后关闭虚拟机并创建 VMware 快照，建议名称：
 

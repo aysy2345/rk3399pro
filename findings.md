@@ -4,6 +4,18 @@
 
 - RKNN 转换手册必须明确区分“转换工具已完成”和“真实模型尚未转换验证”，避免把工具完成误写成模型已可部署。
 - Anaconda 安装文件名取决于课程提供的安装包，因此手册通过 `find` 获取唯一安装程序，再用变量执行，避免硬编码不存在的版本文件名。
+- 宿主机检查结果：Intel Core i7-13700HX 的 `VirtualizationFirmwareEnabled=False`，需要先在 UEFI/BIOS 开启 Intel Virtualization Technology；VMware Workstation 注册表查询无结果；C 盘剩余 103.6 GB、D 盘剩余 188.5 GB，磁盘空间满足虚拟机需求。
+- 宿主机型号为 HP OMEN 16-wf0xxx。惠普官方针对 OMEN 系列给出的路径是：开机立即按 F10 进入 BIOS，在 Configuration 中将 Virtualization Technology 设为 Enable，再按 F10 保存退出。
+- 用户提供的 OMEN Setup Utility 照片显示“处理器虚拟化技术”开关滑块位于右侧，与同页已开启选项的样式一致，BIOS 页面当前呈开启状态；但 Windows 查询仍为 False，应先确认保存退出并执行一次完全关机冷启动。
+- 微软文档说明：当 Windows Hypervisor 已存在时，部分 Hyper-V 硬件需求字段不再直接显示；因此 BIOS 已开启但单个 WMI 字段为 False 时，应联合检查 `HypervisorPresent`、`systeminfo` 和任务管理器状态，不能立即判定固件未开启。
+- 用户检查得到 `HyperVisorPresent=True`，可确认硬件虚拟化已启用且 Windows Hypervisor 正在运行；BIOS 阶段通过，无需关闭安全功能。
+- 截至 2026-09-27，VMware 官方当前版本为 Workstation Pro 26H1（Windows 64 位），个人、教育和商业用途均免费；官方安装包通过 Broadcom Support Portal 获取，需要基本账户登录并接受条款。
+- Broadcom 下载页当前在“VMware Workstation Pro 26H1 for Windows”下同时提供 `26H1u1`（Release Level Info 546859）和初始版 `26H1`；安装应选择更新版 `26H1u1`。
+- `26H1u1` Windows 官方安装包为 `VMware-Workstation-Full-26H1u1-25688693.exe`，页面标注大小 267.61 MB、Build 25688693、SHA-256 `3d775c3c2153600eef4642f95d519a514ba7e861400bda2598352bff792db473`。
+- Broadcom 官方贸易合规要求：Basic User 必须填写真实完整的个人姓名、实体地址、邮箱和国家；仅使用英文字符，不使用中文、缩写姓名、虚假数据、邮政信箱或缺少门牌号的地址。免费软件下载不需要 Site ID。
+- 用户显示的贸易合规表中 Company 为必填文本字段，Address 2 为可选；提交前还应确认名字和姓氏为真实姓名拼音。隐私信息不记录到项目文件。
+- 贸易合规表中曾填入的 `330501` 不是旧馆街道邮政编码；公开邮政目录显示旧馆邮政所及旧馆部分地址使用 `313011`。提交者仍应以本人实际邮件地址或国家邮政局查询结果为准。
+- Ubuntu 官方仍提供 `ubuntu-18.04.6-desktop-amd64.iso`，大小约 2.3 GB，官方 SHA-256 为 `f730be589aa1ba923ebe6eca573fa66d09ba14c4c104da2c329df652d42aff11`；项目应使用 Desktop AMD64，而不是 live-server 镜像。
 
 ## Requirements
 
