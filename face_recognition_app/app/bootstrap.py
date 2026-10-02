@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 from face_recognition_app.app.config import (
     AppConfig,
+    ConfigError,
     validate_runtime_paths,
 )
 from face_recognition_app.app.controller import AppController
@@ -24,6 +25,11 @@ from face_recognition_app.inference.fake import (
 from face_recognition_app.inference.onnx_backend import (
     OnnxMobileFaceNetEmbedder,
     OnnxRetinaFaceDetector,
+)
+from face_recognition_app.inference.interfaces import InferenceError
+from face_recognition_app.inference.rknn_backend import (
+    RknnMobileFaceNetEmbedder,
+    RknnRetinaFaceDetector,
 )
 from face_recognition_app.storage.face_store import FaceStore
 from face_recognition_app.ui.enrollment_wizard import EnrollmentWizard
@@ -44,8 +50,21 @@ class BackendPair:
     detector: Any
     embedder: Any
 
+    def release(self) -> None:
+        released = set()
+        for backend in (self.detector, self.embedder):
+            if id(backend) in released:
+                continue
+            released.add(id(backend))
+            release = getattr(backend, "release", None)
+            if callable(release):
+                release()
+
 
 class BackendFactory:
+    def __init__(self, rknn_factory: Optional[Callable[[], Any]] = None) -> None:
+        self._rknn_factory = rknn_factory
+
     def create(self, config: AppConfig) -> BackendPair:
         backend = config.runtime.backend
         if backend == "fake":
@@ -56,7 +75,27 @@ class BackendFactory:
                 ),
             )
         if backend == "rknn":
-            raise BootstrapError("RKNN 后端将在 Phase 7 板端集成阶段提供")
+            detector = None
+            try:
+                validate_runtime_paths(config)
+                detector = RknnRetinaFaceDetector(
+                    model_path=config.models.detector_path,
+                    runtime_factory=self._rknn_factory,
+                    confidence_threshold=(
+                        config.recognition.detection_threshold
+                    ),
+                )
+                embedder = RknnMobileFaceNetEmbedder(
+                    model_path=config.models.recognizer_path,
+                    runtime_factory=self._rknn_factory,
+                )
+                return BackendPair(detector, embedder)
+            except (ConfigError, InferenceError) as exc:
+                if detector is not None:
+                    detector.release()
+                raise BootstrapError(
+                    "RKNN 后端初始化失败：{}".format(exc)
+                ) from exc
         if backend == "onnx":
             validate_runtime_paths(config)
             return BackendPair(

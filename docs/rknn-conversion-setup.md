@@ -221,4 +221,5 @@ RetinaFace 报告必须显示检测数量一致，框和关键点误差不超过
 
     rk3399pro-rknn-models-verified
 
-至此才能进入 RK3399Pro 板端 RKNN Lite 后端集成阶段。
+至此才能进入 RK3399Pro 板端 RKNN Lite 后端集成阶段。板端安装、模型复制、
+启动和验收步骤见 [`rk3399pro-deployment.md`](rk3399pro-deployment.md)。

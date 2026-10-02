@@ -57,10 +57,10 @@ def test_backend_factory_reports_missing_onnx_models(tmp_path):
         BackendFactory().create(config)
 
 
-def test_backend_factory_rejects_reserved_rknn_backend(tmp_path):
+def test_backend_factory_reports_missing_rknn_models(tmp_path):
     config = parse_config(config_data("rknn"), tmp_path)
 
-    with pytest.raises(BootstrapError, match="RKNN"):
+    with pytest.raises(BootstrapError, match="model file not found"):
         BackendFactory().create(config)
 
 

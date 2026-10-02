@@ -85,7 +85,10 @@ def run(argv: Optional[List[str]] = None) -> int:
     except (BootstrapError, ConfigError, FaceStoreError, ValueError) as exc:
         return _show_startup_error(exc)
     bundle.window.showMaximized()
-    return int(app.exec_())
+    try:
+        return int(app.exec_())
+    finally:
+        bundle.backend.release()
 
 
 if __name__ == "__main__":

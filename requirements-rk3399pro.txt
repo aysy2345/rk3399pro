@@ -2,4 +2,5 @@
 numpy==1.16.3
 opencv-python==4.5.4.60
 Pillow==9.2.0
-# Install rknn_toolkit_lite-1.7.1-cp37-cp37m-linux_aarch64.whl separately.
+# Install the Rockchip-provided rknn_toolkit_lite-1.7.1
+# cp37/cp37m Linux aarch64 wheel separately; it is not installed from PyPI.
